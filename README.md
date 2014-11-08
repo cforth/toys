@@ -21,7 +21,7 @@ multi_int
 
 sort
 ------------
-各种搜索算法举例
+各种排序算法举例
 
 
 stack_queue
