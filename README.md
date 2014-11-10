@@ -29,6 +29,6 @@ stack_queue
 堆栈与队列
 
 
-tree_traversal
+search
 -------------
-树结构的一系列算法
+各种搜索算法举例
