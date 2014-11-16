@@ -213,7 +213,31 @@ def breadth_first_search(root):
     quene.append(root)
     while len(quene) != 0 :
         node = quene[0]
-        print(node.value, end=' ')
+        print(node.value, end = ' ')
+        quene.pop(0)
+        if node.left != None:
+            quene.append(node.left)
+        if node.right != None:
+            quene.append(node.right)
+    print('\n')
+
+
+def print_tree(root):
+    """未完成！打印出每个节点的value和左右子节点的value，为了下一步打印出树结构做准备
+    """
+    quene = []
+    quene.append(root)
+    while len(quene) != 0 :
+        node = quene[0]
+        if node.left == None:
+            ll = '-'
+        else:
+            ll = node.left.value
+        if node.right == None:
+            rr = '-'
+        else:
+            rr = node.right.value
+        print('  {n}  \n _|_ \n|   |\n{l}   {r}\n==========='.format(n = node.value, l = ll, r = rr))
         quene.pop(0)
         if node.left != None:
             quene.append(node.left)
@@ -225,6 +249,9 @@ print('Depth first search:')
 depth_first_search(root)
 print('Breadth first search:')
 breadth_first_search(root)
+
+print('Print Tree:')
+print_tree(root)
 
 print('Max Key: %d' % get_max(root))
 print('Min Key: %d' % get_min(root))
