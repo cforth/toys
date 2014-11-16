@@ -1,0 +1,228 @@
+
+% before running TeX, process this with:
+%	tree -t <texsample >texsample.tex
+% or	tree -u <texsample >texsample.tex
+
+\nopagenumbers
+% hi is a strut to leave more room above overlined things
+\def\hi{\vrule width0em height10pt depth3.5pt}
+
+		NP: Article Replacement
+\bigskip
+	\tree
+(S$_0$
+  (NP
+    (Det 
+      (John$_i$'s)
+    )
+    (\hi $\overline{\rm N}$
+      (N\L 
+        (denunciation)
+      )
+      (\hi $\overline{\rm P}$
+        (P\L 
+          (of)
+        )
+        (NP$_i$
+          (himself)
+        )
+      )
+    )
+  )
+  (\hi $\overline{\rm V}$
+    (V\L 
+      (surprise)
+    )
+    (NP 
+      (us)
+    )
+  )
+)
+
+\bigskip
+
+\noindent{\rm 2c. John's denunciation of himself surprised us.}\medskip
+
+  \tree
+(
+  (S$_0$
+    (NP
+      (Det\L 
+        (the)
+      )
+      (\hi$\overline{\rm N}$
+        (N\L 
+          (ACTION)
+        )
+        (S$_1$
+          (NP$_i$ 
+            (John)
+          )
+          (\hi$\overline{\rm V}$
+            (V\L 
+              (denounce)
+            )
+            (NP$_i$ 
+              (him)
+            )
+          )
+        )
+      )
+    )
+    (\hi$\overline{\rm V}$ 
+      (V\L 
+        (surprise)
+      )
+      (NP 
+        (us)
+      )
+    )
+  )
+  (\rm S$_1$: Reflexivization $\rightarrow$)
+  (S$_0$
+    (NP
+      (Det\L 
+        (the)
+      )
+      (\hi$\overline{\rm N}$
+        (N\L 
+          (ACTION)
+        )
+        (S$_1$
+          (NP$_i$ 
+            (John)
+          )
+          (\hi$\overline{\rm V}$
+            (V\L 
+              (denounce)
+            )
+            (NP$_i$ 
+              (himself)
+            )
+          )
+        )
+      )
+    )
+    (\hi$\overline{\rm V}$ 
+      (V\L 
+        (surprise)
+      )
+      (NP 
+        (us)
+      )
+    )
+  )
+)
+
+
+	\noindent{\rm $\overline{\rm N}$: Nominalization}\smallskip
+	\tree
+(S$_0$
+  (NP
+    (Det\L 
+      (the)
+    )
+    (\hi$\overline{\rm N}$
+      (\hi$\overline{\rm N}$
+        (N
+          (V\L 
+            (denounce)
+          )
+          (N\L 
+            (ACTION)
+          )
+        )
+        (NP$_i$ 
+          (himself)
+        )
+      )
+      (NP$_i$ 
+        (John)
+      )
+    )
+  )
+  (\hi$\overline{\rm V}$ 
+    (V\L 
+      (surprise)
+    )
+    (NP 
+      (us)
+    )
+  )
+)
+
+
+	\noindent{\rm $\overline{\rm N}$: Preposition insertion}\smallskip
+	\tree
+(S$_0$
+  (NP
+    (Det\L 
+      (the)
+    )
+    (\hi$\overline{\rm N}$
+      (\hi$\overline{\rm N}$
+        (N\L 
+          (denunciation)
+        )
+        (\hi$\overline{\rm P}$ 
+          (P\L 
+            (of)
+          )
+          (NP$_i$ 
+            (himself)
+          )
+        )
+      )
+      (\hi$\overline{\rm P}$ 
+        (P\L 
+          (by)
+        )
+        (NP$_i$ 
+          (John)
+        )
+      )
+    )
+  )
+  (\hi$\overline{\rm V}$ 
+    (V\L 
+      (surprise)
+    )
+    (NP 
+      (us)
+    )
+  )
+)
+
+
+	\noindent{\rm 	NP: Article Replacement}\smallskip
+	\tree
+(S$_0$
+  (NP
+    (Det 
+      (John's)
+    )
+    (\hi$\overline{\rm N}$
+      (N\L 
+        (denunciation)
+      )
+      (\hi$\overline{\rm P}$ 
+        (P\L 
+          (of)
+        )
+        (NP$_i$ 
+          (himself)
+        )
+      )
+    )
+  )
+  (\hi$\overline{\rm V}$ 
+    (V\L 
+      (surprise)
+    )
+    (NP 
+      (us)
+    )
+  )
+)
+
+\bye

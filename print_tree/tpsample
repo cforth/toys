@@ -1,0 +1,106 @@
+\noindent
+
+Here are some examples to illustrate the tpar program and the
+`T' triangle, `L' lexical, `O' omit, `M' mother, `D' daughter,
+and `P' phantom tree commands.
+
+%%  For tty output, use
+%% 	% tpar tpsample |tree |more
+%% or	% tpar -t tpsample |tree |more
+%% For TeX output, use
+%% 	% tpar -t tpsample |tree -t >tpsample.tex
+%% or	% tpar -t tpsample |tree -u >tpsample.tex
+
+This is from the man page:
+
+ (ex8)	\tree \T S
+		     every
+		     good boy
+                     VP
+			\L V - does
+			\L A - fine
+
+A couple of examples from McCawley's text:
+
+p. 35
+(6)\tree -b2
+S[0]
+    S[1]
+	S[2]
+	    NP\T - the terrorists
+	    VP
+		V\L - shoot
+		NP\T - the hostage
+	n't
+    Adv\L - probably
+
+The V' with `say' in this next example came out too wide, originally,
+because the two constituents following the V, the P' and NP, couldn't be
+put close enough together.  I wanted to lower the S[2] under the NP so
+it would go closer to the preceding P', so I've put a node with no name
+but with command Z between the NP and the S[2] below it.  The
+Z command does not do anything except hold a place in the tree;
+it's a little tricky.
+
+p. 689
+(8)\tree
+S[0]
+  NP[x]
+    the
+    S[3]
+      NP - you
+      V'\T - send $x$ many Christmas\L - cards to your friends
+  S[1]
+    NP - it
+    V'
+      V\L - say
+      P'\T - in the Times Al.
+      NP
+       \Z
+        S[2]
+	  NP\T - President R
+	  V'\T
+	    send more than\L - $x$ Christmas cards to\L - Republican supporters
+
+
+In this example from McCawley, p. 310, the V is made an unnatural
+mother of the Adv with the M and D commands, and the line that
+would have connected the Adv to the S is omitted with the O command.
+The original position of the Adv is marked with a phantom, to get the
+tree to look like something belongs here.
+
+(6b) \tree
+V'
+  \M V
+    V\L - prove
+    ghost\P
+  NP
+    S\T - that the earth is round
+  \D\O Adv\L - conclusively
+
+From McCawley, p. 423.  There are two side-by-side trees here, but
+the left one has omitted lines, so that all that is visible is
+`RNR' and the arrow.  The N-bar is connected to the S `who teach ...'
+with M and D commands, but the line connecting the S to its natural
+mother remains.  To get the line connecting the two N-bars to slant
+to the left, the P command is used to put a phantom constituent in
+the original position of the RNR'd S.  That first Z command is there
+just to hold a place in the tree.
+
+(21) \tree
+\Z
+  \O - \O - RNR\O\L - ---$>$
+  NP
+    NP
+      Det\L - most
+      N'\M
+        N' - N\L - linguists
+	some room\P
+    and
+    NP
+      Det\L - almost\L - all
+      N'
+        N' - N\L - anthro-\L - pologists
+        S\D\T - who teach at\L - American\L - universities
+
+\bye

@@ -1,0 +1,746 @@
+% Version 1.0
+\nopagenumbers
+\headline={\tenrm Use of {\sl tree}\hfil\folio}
+\voffset=2\baselineskip
+\raggedbottom
+
+\font\tfont=Helvetica at 8pt
+\font\exf=cmtt8
+\font\eightrm=cmr8
+\parindent=0pt
+\newcount\exno
+\exno=0
+\def\x#1:#2.{
+\advance\exno by1
+{\baselineskip10pt
+\smallbreak
+\leavevmode
+\obeyspaces
+\hbox to 3em{\hfill(\the\exno)}%
+\quad\hbox to 4.5in{{\exf\char"5C tree\ #1}\hfill}\hfill{\sl#2}}
+\smallbreak
+}
+\def\xtwo#1:#2:#3.{
+\advance\exno by1
+{\baselineskip10pt
+\smallbreak
+\leavevmode
+\obeyspaces
+\hbox to 3em{\hfill(\the\exno)}%
+\quad\hbox to 4.5in{{\exf\char"5C tree\ #1}\hfill}\par
+\quad\quad\quad\hbox to 4.5in{{\exf#2}\hfill}\hfill{\sl#3}}
+\smallbreak
+}
+\def\xthree#1:#2:#3:#4.{
+\advance\exno by1
+{\baselineskip10pt
+\smallbreak
+\leavevmode
+\obeyspaces
+\hbox to 3em{\hfill(\the\exno)}%
+\quad\hbox to 4.5in{{\exf\char"5C tree\ #1}\hfill}\par
+\quad\quad\quad\hbox to 4.5in{{\exf#2}\hfill}\par
+\quad\quad\quad\hbox to 4.5in{{\exf#3}\hfill}\hfill{\sl#4}}
+\smallbreak
+}
+\def\xfour#1:#2:#3:#4:#5.{
+\advance\exno by1
+{\baselineskip10pt
+\smallbreak
+\leavevmode
+\obeyspaces
+\hbox to 3em{\hfill(\the\exno)}%
+\quad\hbox to 5.5in{{\exf\char"5C tree\ #1}\hfill}\par
+\quad\quad\quad\hbox to 5.5in{{\exf#2}\hfill}\par
+\quad\quad\quad\hbox to 5.5in{{\exf#3}\hfill}\par
+\quad\quad\quad\hbox to 5.5in{{\exf#4}\hfill}\hfill{\sl#5}}
+\smallbreak
+}
+\newdimen\svhsize\newdimen\svparindent
+\def\xp#1:#2\par{%
+\svparindent=\parindent
+\parindent=0pt
+\svhsize=\hsize
+\hsize=1.6in
+\setbox0=\vbox{
+\raggedright
+{\tt #1}
+}
+\hsize=4in
+\setbox1=\vbox{#2}
+\ht0=\ht1
+\hsize=\svhsize
+\vskip.10in plus.05in minus.02in
+\hbox to \hsize{\qquad\box0\hss\box1}
+\vskip.10in plus.05in minus.02in
+\parindent=\svparindent
+}
+\def\up{{\tt\char"5E}}
+\def\bs#1{{\tt\char"5C #1}}
+\def\xbs#1{{\exf\char"5C #1}}
+\def\tl{{\tt\char"7E}}
+\def\c#1{{\tt\char"5C #1}}
+\def\o#1{{\tt-#1}}
+\def\sect#1\par{\medbreak{\eightrm\uppercase{#1.}}\ }
+\centerline{Use of {\sl tree} program}\bigskip
+
+\beginsection Input/output.
+
+{\sl Tree} takes input from a text file with trees defined in
+a parenthesis notation and produces a new text with graphic
+displays of the trees substituted for the original definitions.
+The display can be either tty-style, for screen display or
+(crude) printing with a typewriter font, or \TeX-style, for
+formatting and printing with \TeX.
+
+Assuming that the file `tfile' has some tree definitions, give
+this Unix command to display trees on your terminal screen:
+\smallskip
+\hskip .5in{\tt\% tree tfile}
+\smallskip
+\noindent
+and these commands to get printout:
+\smallskip
+\hskip .5in{\tt\% tree -u tfile >tfile.tex}\par
+\hskip .5in{\tt\% tex tfile}\par
+\hskip .5in{\tt\% lpr -d tfile.dvi}
+\smallskip
+\noindent
+But it might be necessary to adapt the above slightly, depending
+on local details of how \TeX\ and your printing software works.
+\beginsection Parenthesis notation.
+
+A tree consists of left and right parentheses surrounding a node name
+and zero or more trees.
+
+\x	():	empty node.
+\x	(runs):	one node.
+\x	(runs(John)): two nodes.
+
+The characters making up the name cannot be separated by trees.
+Stuff after the first subtree not itself part of a subtree is
+discarded.
+
+\x	(ru(John)ns there): discarded text.
+
+The interpretation of the text of names is similar to that in \TeX,
+so spacing is free.
+For one thing,
+spaces, tabs, or newlines at the beginning or end of node names are ignored.
+
+\xthree
+	( runs (:
+	      John:
+	)):
+		free spacing.
+
+And also,
+multiple spaces, tabs, or newlines within a name count as a single space.
+The next three trees are all the same:
+
+\x	(runs fast):.
+\x	(runs       fast):.
+\xtwo	(runs:
+	   fast ): free spacing.
+
+As well as ordinary characters, a node name in the source file may also
+have certain special character combinations and \TeX\ commands,
+which are discussed in the next two sections.
+\beginsection Special characters and commands.
+
+There are two special characters, left and right parentheses, and a
+number of special character combinations.  The `\bs{}' character begins
+all special combinations, but it is
+considered simply as part of a node name unless it occurs in one of the
+combinations listed below.  After `\bs{}' plus capital letter, a space or
+a tab is optional and is ignored if present, except that it must be
+present to separate the special combination from a following alphabetic
+character.  (Thus {\tt \bs{TeX}}, for instance, is left unchanged as part
+of a node name, but {\tt H\bs{T} eX} is interpreted as the node name
+`HeX' with the command to draw a triangle under this node.)
+
+\xp	(:	Begins a tree.
+
+\xp	):	Ends a tree.
+
+\xp	\bs(:	Includes the left paren character in a node name.
+
+\xp	\bs):	Includes the right paren character in a node name.
+
+\xp	\bs{}$<$blank$>$:
+		Includes the space character in a node name.
+
+\xp	\bs{}\bs{}:	Includes the backslash character in a node name.
+
+\xp	\c{L}:	``Lexical'' omits lines and vertical space under a node.
+
+\xp	\c{I}:	``Invert'' turns a subtree upside down.
+
+\xp	\c{H}:	``Head'' on a node under a branching node centers the
+		branching node over the head node.
+
+\xp	\c{T}:	``Triangle'' draws a triangle under a node.
+
+\xp	\c{F}:	``Flatten'' moves a subtree down to the lowest level.
+		However, nameless nodes are moved down one less level,
+		so that the vertical will end above the position
+		the name, if there were one, would occupy if moved
+		to the lowest level.
+
+\xp	\c{E}:	``Even'' restricts the meaning of ``lowest'' for the
+		\c{F} command to the lowest level node dominated by
+		the node marked with \c{E}.  Inverted subtrees are
+		ignored when searching for the lowest node.
+
+\xp	\c{M}:	``Mother'' draws curvy line from below node to above one
+		or more nodes with \c{D}.  No other \c{M} command
+		can be given for the same node.
+
+\xp	\c{D}:	``Daughter'' draws curvy line from above node to below a
+		single node with \c{M}.  No other \c{D} command can be
+		given for the same node.  No more than one node labeled
+		with \c{D} can be higher in the tree than the
+		corresponding node labeled with \c{M}.
+
+\xp	\c{M0}-\c{M9}:	Like \c{M} but paired with \c{D0}-\c{D9},
+		respectively.
+
+\xp	\c{D0}-\c{D9}:	Like \c{D} but paired with \c{M0}-\c{M9},
+		respectively.
+
+\xp	\c{B0}-\c{B9}:	``Bold'' replaces vertical connecting lines under
+		a node with various \TeX\ symbols --- arrows or double
+		lines.  Under branching nodes, \c{B0}--\c{B8} give a
+		horizontal bar with a tail on top, and \c{B9} gives
+		a brace.  Under nodes with the \c{T} ``triangle''
+		command, \c{B0}--\c{B8} give a
+		rectangle with a tail on top and, for \c{B1}--, filled
+		with various numbers of double arrows (not very
+		attractive), and \c{B9} uses a brace.
+
+\xp	\c{B}: ``Brace'' requests a brace under a branching node and
+		simple verticals above each of the daughters, or
+		a simple vertical under a non-branching node.  It is
+		the same as \c{B9}.  The minimum size of a brace is
+		about 2 ems in CMR 10.  If the brace would have to be
+		less than 2.5 ems, consequently (leaving a little
+		leeway), tree draws a horizontal bar instead.
+
+\xp	\c{O}:	``Omit'' omits the line above a node that would have connected
+		it to its mother.
+
+\xp	\c{P}:	``Phantom'' omits the line above a node that would
+		have connected it to its mother and also omits the node
+		name, but reserves horizontal space in the tree as if the
+		node name were actually there.
+
+\xp	\c{R}:	``Relational'' puts a vertical bar to the right of a node
+		name and aligns any connecting tree lines above or below
+		with this vertical, so that the node name appears to
+		be associated with a connecting line, rather than a
+		tree node.  The root nodes of single (not side-by-side)
+		trees are unaffected.
+
+\xp	\bs{}$<$capital-letter$>$:
+		If the capital is followed by an alphabetic character,
+		this is not special.  Otherwise, if the capital is not
+		part of one of the combinations listed above, this is
+		ignored--it does not become part of the node name, and
+		it has no effect.
+
+You will notice that there is some potential conflict between
+{\sl tree} commands and \TeX\ commands, since both use backslash
+as the command introducing character.
+If you need to use \TeX's backslash-space command, you can
+use `\bs{}\bs{}\ ', and {\sl tree} will leave single backslash plus
+space in the name, with this counting for one character of width
+(see the section below on the width of names).
+If you happen to have defined some \TeX\ commands with single
+capital letters as names, similarly, you can double the backslash
+to keep them in the name, and the combination will not contribute
+toward the calculated width of the name.
+\beginsection Options.
+
+Either after the program name {\sl tree} or after the command
+\bs{tree} in a textfile, one can specify options that affect
+the kind of output {\sl tree} produces or apply commands to
+nodes in some global way.
+Options after \bs{tree} concern only the one tree which follows,
+but options on the command line apply to all trees in the files
+processed by this invocation of {\sl tree.}
+In case of conflict, an option after the \bs{tree} command overrides
+one given on the command line.
+Options are single letters given after hyphen and, in a few cases,
+followed by a non-negative integer argument.
+Several options together can be separated by spaces and each
+introduced by a separate hyphen, or next to each other and after
+a single hyphen.
+A numeric argument can come immediately after its option letter
+or be separated from it by spaces, but cannot be immediately
+followed by an option letter.
+
+
+\xp \o{t}: causes {\sl tree} to emit {\sl \TeX} code.
+
+\xp \o{u}: also produces {\sl \TeX} code, but with PostScript commands for
+diagonal lines.
+
+\xp \o{b} {\it num}:  sets the blackness of triangles drawn under
+certain nodes (see below).  For the \o{t} option, extra verticals fill
+in the base of ``triangles'', the spacing of them depending on {\it
+num}.  For tty output, various characters are used to approximate
+connecting lines, again depending on {\it num}.  Used with the \o{t}
+option or for tty output, this option has the same effect as giving a
+\c{B}{\it digit} command for each node, where {\it digit} is the first
+significant digit of {\it num}.
+
+\xp \o{v}: displays {\sl \TeX} commands for tty output --- normally they are
+suppressed.
+
+\xp \o{q}: suppresses warning messages that are otherwise issued when various
+circumstances suggest a possible problem with the definition of a tree.
+The warnings are given for blank lines, `\bs{tree}' commands, or text
+after a node name when any of these are found within a tree definition.
+
+\xp \o{g} {\it num}:  uses {\it num} for gap separating subtrees in
+place of default value of 2.
+
+\xp \o{O}: causes the lines connecting node names to be omitted.  This option
+has the same effect as giving the `\c{O}' command for each node.
+
+\xp \o{L}: omits the lines connecting nodes, leaving no vertical space where
+the lines would have been.  This option has the same effect as giving
+the `\c{L}' command for each node.
+
+\xp \o{T}: draws triangles under nodes instead of branches.  This option has
+the same effect as giving the `\c{T}' command for each node.
+
+\xp \o{I}: turns trees upside down.  This option has the same effect as
+giving the `\c{I}' command for the top node (or the top nodes, in the
+case of side-by-side trees).
+
+\xp \o{F}: lowers terminals to lowest level found in the subtree whose top
+node is marked with `\c{E}', or else to the lowest level in the entire
+tree if `\c{E}' has not been used.  If a terminal has a node immediately
+above it with the `\c{L}' lexical command, this is lowered too.  This
+option has the same effect as giving the `\c{F}' command for each
+terminal node (or \c{L} lexical nodes above it).
+
+\xp \o{E}: restricts the context for lowering with `\c{F}' commands or the
+\o{F} option to each subtree under a branching node.  This option has
+the same effect as giving the `\c{E}' command for every branching node.
+
+\xp \o{R}: places node names to the left of verticals.  This option has the
+same effect as giving the `\c{R}' command for every non-terminal node.
+Nodes with `\c{L}' over terminal nodes are also unaffected.
+
+\xp \o{x}: uses line drawing characters of the IBM pc extended character
+set for screen output.
+
+\xp \o{X}: also uses line drawing characters, but in a format compatible
+with Micropro's WordStar.
+
+\beginsection Examples.
+
+% NAMELESS NODES
+\sect Nameless nodes
+
+Nodes do not need to have names:
+\x (proverb ((every)(dog)) ((has)(his)(day)) ):two nameless nodes.
+
+However, the case of a nameless root node is special.
+This means that two trees are to be displayed side-by-side and
+not connected:
+\x (((every)(dog)) ((has)(his)(day)) ):separate trees.
+
+If you want the trees to be connected, you have to add extra
+parentheses:
+\x ((((every)(dog)) ((has)(his)(day)) )):connected trees.
+\xthree (( ( (the) ( ( (giant) ( (who) ( (be) (green)))):
+      ( (who) ( (be) (jolly))))):
+  ( (wear) ( ( (shoes) ( (Gucci) ( (design) (which)))))))):
+	nameless trees connected.
+
+Nameless terminal nodes give vertical lines at the bottom.
+\x ((worms)(have)(two())(legs())):bottom verticals.
+
+Sometimes it is convenient to make a nameless node in order to
+minimize the width of a branching constituent which has one
+very wide daughter.
+\x (VP (send)(him)(the oldest sample of Cabernet we have)):
+	equally spaced sisters.
+The `send' and the `him' are far apart because the connecting
+lines over sister constituents are made equally spaced and the `him'
+line has to be so far from the following line.
+But if the long daughter is lowered by one level with an extra
+pair of parentheses, the whole thing gets much narrower:
+\x (VP (send)(him)((the oldest sample of Cabernet we have))):
+	lowering a node.
+The appearance of this example could be improved by putting a
+triangle over the long constituent, as in the examples following.
+
+% TRIANGLES
+\sect Triangles
+
+The \c{T} command makes a triangle under a node to indicate structure
+not explicitly shown.
+A triangle can be drawn over several daughter constituents or over
+a single daughter, however a single daughter must be at least
+three characters wide.
+\x (( (NP\T(Orville and Wilbur)) (P\T(had)(bikes)(galore)) )):
+	triangle over one node.
+Notice that the triangle over the single daughter has its
+base drawn out to the edges of what is below, unlike the other
+triangle.  This difference might be considered a bug.
+\smallskip
+There are several options to apply commands in some global way.
+Triangles can be drawn under all nodes, without giving a
+\c{T} command for each (non-terminal) node.
+An example above with the {\tt -T} option and some extra parens
+comes out like this.
+\x -T (VP (send)(him)(((the oldest sample of Cabernet we have)))):
+	option versus command.
+\smallskip
+Options can be invoked when calling {\sl tree} also, using the same
+syntax.
+
+% HEADS
+\sect Heads
+
+One of multiple sisters can designated as head with \c{H} to align
+it under its mother.
+\xthree (( ((the\H) ( (old) (\H(grey)(mare\H)) ) ) (\H (ain't\H):
+  ( (what\H) ( (she) (\H (\H(used\H)(to)) (be) ) ):
+  )))):
+	alignment over head.
+I can tell what heads are about as well as what topics are,
+which is not very, so I probably got this example wrong.
+
+% RELATIONAL
+\sect Relations
+
+To suggest that a label is associated with a relation between nodes
+rather than being a node label, the \c{R} command can be used to
+place a label to the left of a vertical.  In the following, case
+labels are treated as relational:
+
+\xfour (S (Agent\R(NP(John))) (VP(V\L(broke)):
+  (Patient\R(NP(the)(window))):
+  (Instrument\R(PP(P\L(with)):
+  (Patient\R(NP(the)(hammer))) )) ) ):.
+
+In some cases it may be possible to cobble together something
+resembling an RG arc-stratum diagram:
+
+\xfour -g0 (( (1\R(1\R(Mary))) (P\R(P\R(believe))):
+ (((2\R( ((((())))) )))) (2\R(Cho\R((:
+  (1\R(Victor\ \ \ \ )) (P\R(shoot)) (2\R(John)):
+ ))))   )):.
+
+% OMIT
+\sect Omitting lines
+
+When part of a tree display is not actually a tree, but a rule
+name, for example, the lines that would otherwise appear above
+it can be suppressed with \c{O}.
+
+\xthree ( (VP(V(make))(headway)):
+        (\O(\O(\O(idiom decoration\O)))):
+        (VP(V(make)(for))(headway)) ): omitted lines over rule.
+
+Nodes that aren't attached by a line to their parent node just
+float below it --- they are not aligned in the same way as nodes that are
+attached.
+
+\xtwo (top (first (over\O)(the)(river)):
+ (second (and)(through)(the\O)(woods\O))):alignment of unattached nodes.
+
+% FLATTENING
+\sect Flattening
+
+Another style of tree one sometimes sees has terminal nodes all
+on one line.
+The \c{F} command allows flattening of selected constituents:
+\xtwo (S (NP\F(all)(NP\T(the workers))):
+ (VP(V\F(be)) (VP(V\F(praised))(PP\T(by the manager))) ) ):
+	flatten command.
+The corresponding {\tt -F} option flattens all terminals.
+\xtwo -F (S (NP(all)(NP\T(the workers))):
+ (VP(V(be)) (VP(V(praised))(PP\T(by the manager))) ) ):
+	flatten option.
+Flattened trees tend to have excessive horizontal spacing.
+The minimum space required between nodes that are next to
+each other is ordinarily 2, but this can be adjusted with
+the gap option {\tt -g}.
+Adjusting the above to a gap of one:
+\xtwo -F -g1 (S (NP(all)(NP\T(the workers))):
+ (VP(V(be)) (VP(V(praised))(PP\T(by the manager))) ) ):
+	gap between nodes.
+
+It's possible to compromise and just have most things flattened.
+The \c{E} ``even'' command selects certain constituents as the context
+of flattening, rather than the entire tree.
+\xtwo -F -g1 (S (NP\E(all)(NP\T(the workers))):
+ (VP\E(V(be)) (VP(V(praised))(PP\T(by the manager))) ) ):
+	evening.
+
+There is also an {\tt -E} option to select all subtrees dominated
+by branching nodes as flattening contexts.
+
+% LEXICAL
+\sect Lexical
+
+The above example was lifted from James McCawley's textbook
+{\it The Syntactic Phenomena of English.}
+McCawley has the idea that lexical labels have a different status
+than other node labels, and has such labels immediately above
+what they label in his trees.
+I don't think that's right, but nonetheless, {\sl tree} provides
+a command \c{L} to omit lines under a node.
+Redoing the previous example,
+\xtwo -F -g1 (S (NP\E(all)(NP\T(the workers))):
+ (VP\E(V\L(be)) (VP(V\L(praised))(PP\T(by the manager))) ) ):
+	no lines under nodes.
+Note that the flattening process moves the lexical labels downward,
+too.
+
+\sect Inversion
+
+Regular trees do not look very nice when inverted with the \c{I}
+command or the {\tt -I} option.
+\xthree -g1 (S\I (NP(Fred)) (V'(V\L(may)) (V'(V\L(have)):
+  (V'(V\L(be\(en\))) (V'(V\L(sing\(ing\))) (NP(songs)):
+   ))))):.
+But they're better when flattened.
+\xthree -g1 -F -I (S (NP(Fred)) (V'(V\L(may)) (V'(V\L(have)):
+  (V'(V\L(be\(en\))) (V'(V\L(sing\(ing\))) (NP(songs)):
+   ))))):
+	flatten and invert.
+
+Inversion can be done to subtrees, and in that event, the
+context for flattening is determined in a special way.
+Compare the next two examples, without and with the
+\c{E} commands on the top `S' nodes:
+\xtwo -F (S (Mary) (VP(V\L(selected)):
+	((S\I(John) (VP(secretary)) )) ) ):.
+\xtwo -F (S\E (Mary) (VP(V\L(selected)):
+	((S\E\I(John) (VP(secretary)) )) ) ):
+	evening and inversion.
+
+The evening produced by \c{E} ignores depth in the tree
+produced by inverted subtrees, so that leaves in the upper
+tree are flattened out down to the lowest level the tree would
+have had if the inverted constituent had not been present.
+\smallskip
+There are several ways for an inverted subtree to be attached
+to nodes in the higher tree.
+If there is a highest node in the inverted tree (lowest before
+inversion), that will be the attachment point.
+When there are several nodes at the top level after in version, as in the
+above example, the attachment point is ordinarily just the
+leftmost of them.
+But there are three other ways that such inverted trees
+can get attached: one concerns extra attachments to empty
+nodes in the top tree, a second involves empty nodes in the
+bottom tree, and thirdly, there can be no attachment point.
+\smallskip
+If there are dangling verticals, empty nodes that is,
+in the upper tree, then {\sl tree} tries to align the other
+nodes of the inverted tree with those verticals.
+Following is an example where there are three nodes at the
+top of the inverted tree, `Mary', `leave', and `yesterday'.
+The leftmost, `Mary', gets attached to the original position
+of the lower `S', as a sister of `saw', but there are two
+empty nodes in the right position in the upper `VP', so
+`leave' and `yesterday' are attached to these.
+\xthree (S\E (John\F) (VP(VP (saw):
+  (S\E\I (Mary\F) (VP (leave) (yesterday))):
+  () ) (\F) ) ):
+	attachment of empty nodes.
+
+Another possibility is for several empty nodes at the top of
+the inverted tree to be attached as daughters of a single
+node in the upper tree.
+Consider the phrase `a deep blue necktie', discussed in
+McCawley's text on pages 744-745.
+According to the following analysis, one would expect the
+adverb `deeply' instead of `deep':
+\xtwo (NP (Det\L(a)):
+ (N' (A' (?\L(deep)) (A\L(blue)) ) (N' (N\L(necktie)) ) )):.
+
+McCawley proposes that we get `deep' because of the
+possibility of `deep blue' having the structure:
+\x (N' (A' (A\L(deep)) ) (N' (N\L(blue)) ) ):.
+
+A diagram for both analyses simultaneously can be constructed
+by making a top piece:
+\x (NP (Det\L(a)) (N' (A') (N' (N\L(necktie)) )) ):.
+
+and a bottom piece with two empty nodes at the top:
+\xtwo (N'\I (A' (A\L(deep\L(?()))) ):
+ (N' (N\L(blue\L(A()))) )):.
+
+then putting them together:
+\xthree (NP (Det\L(a)) (N' (A':
+ (N'\I (A' (A\L(deep\L(?()))) ) (N' (N\L(blue\L(A()))) ):
+ ) ) (N' (N\L(necktie)) ))):
+	attachment of empty nodes.
+
+The empty nodes at the bottom have been connected to `A' ' in the top
+tree. (If `deep' is not attached upstairs at all, this comes closer
+to capturing the point, but the formatting is less interesting.)
+\smallskip
+Finally, it is also possible for there to be no attachment
+place for an inverted subtree.
+This case arises when the line above the inverted constituent
+has been omitted with the \c{O} command:
+\xtwo (S (Mary) (VP (selected):
+ (S\O\I (I)(think)) (John) ) (S\O\I(George)(says)) ):
+	omitted lines.
+
+Note that for determining above which constituent a line
+is to be omitted by \c{O} it is the situation before inversion
+that counts.
+
+Here is another example taken from Robert Hoberman, ``Emphasis harmony
+in Modern Aramaic'', Lg. March 1988, 64:1:17.  There are two
+syllable diagrams, which we build up piece by piece.
+Note in this first try that
+with the `s's marked \c{O} (omit), no lines are drawn above them, and
+the `[+CP]' ``floats''.
+
+\xtwo ([+CP] (s\O (C(r))(V(i))(C(q)) ):
+             (s\O (C(q))(V(a)) )  ):.
+
+The `q' should actually appear only once at the bottom with converging
+branches.  Begin by constructing a tree with root `q' and daughters
+`C' `C' and inverting it with \c{I}.
+
+\x (q\I(C)(C)):.
+
+Then substitute this for the first `(C(q))' in the first tree,
+and make the second `(C(q))' an empty node.
+
+\xtwo ([+CP]  (s\O (C(r))(V(i))(q\I(C)(C))):
+              (s\O ()(V(a)))   ):.
+
+This is not bad, but we want the `r', `i', and `a' down one level, so
+add parentheses around them.
+
+\xtwo ([+CP] (s\O (C((r)))(V((i)))(q\I(C)(C))):
+             (s\O ()(V((a))))   ):.
+
+The example of the Hoberman article has two similar trees
+side-by-side, but with the `[+CP]' attached to the first `s' below it in
+the second version, so that `s' should not have an \c{O}.  Adding also the
+example numbers and letters with some ``hard'' spaces around them to get
+better alignment, and putting the \TeX\ \bs{sigma} command for `s',
+we wind up with:
+
+\xfour ( (\(31\) a.\ \ \ ) ([+CP] ($\sigma$\ \O:
+ (C((r)))(V((i)))(q\I(C)(C))) ($\sigma$\ \O ()(V((a))))):
+(\ \ \ b.) ([+CP] ($\sigma$\ (C((r)))(V((i)))(q\I(C)(C))):
+ ($\sigma$\ \O ()(V((a)))))  ):.
+
+\sect Discontinuous constituents
+
+Provided you can use the {\tt -u} option for generating
+\TeX\ code with embedded PostScript, labeling one node
+\c{M} or \c{M0}, $\dots$, \c{M9} and one or more others
+with a matching \c{D}, \c{D0}, $\dots$, \c{D9} gets you
+curvy lines connecting the one with the others.  Here is an
+example from Almerindo E. Ojeda, ``A linear precedence account
+of cross-serial dependencies'', Linguistics and Philosophy,
+Nov. 1988, 11:4:480.
+
+\xfour -F (S (NP(Jan)) (VP\M1 (NP(Piet)) (VP\M2 (NP(Marie)):
+   (VP\M3 (NP(Cecilia)) (\O(\O(V[2]\O\D1(zag)))):
+   (\O(\O(V[2]\O\D2(helpen)))) (\O(\O(V[2]\O\D3(laten)))):
+	(VP (V[1](zwemmen))))))):.
+
+
+\sect Boldness
+
+The \o{b} option and the \c{B} commands are related in what I guess
+is a rather confusing way.
+For tty-style screen output or for \TeX\ code generated with the \o{t}
+option, they do the same thing, except that \o{b} acts on whole
+trees and the \c{B} commands work node-by-node---both control the
+style of lines and other graphics used to connect nodes in the
+displayed tree.
+However, for \TeX code generated with the \o{u} option, although the
+\c{B} commands work the same way, the \o{b} option has a
+related but quite different effect---it controls the greyness level for
+triangles drawn under nodes with the \c{T} command.
+%The following examples will assume that this present text was
+%printed with the \o{u} option.  In case that is not actually so,
+%please make due allowance.
+
+\smallskip
+This has instances of all the bold varieties of connecting graphics
+except for triangles.
+
+\xfour (S\B0(PP\B1(P1\B(P(on))(NP\B2(which)(N1\B(N\B2(table)))))):
+ (S/PP\B3(V(do))(NP\B3(you))(VP/PP\B4(V\B4(think))(S/PP\B5(NP\B5:
+ (Martha))(VP/PP\B6(V\B6(believes))(S/PP\B7(NP\B7(Irving))(VP/PP:
+ \B8(V\B8(put))(NP(Det\B9(the)(N1(N(book)))))(PP/PP(e))))))))):.
+
+For non-branching nodes, simple verticals are used under nodes with
+\c{B0} or \c{B9}.  The verticals for the other \c{B} commands
+are as follows:
+
+\xp \c{B1}:	$\big\Vert$
+
+\xp \c{B2}:	$\big\downarrow$
+
+\xp \c{B3}:	$\big\Downarrow$
+
+\xp \c{B4}:	$\big\uparrow$
+
+\xp \c{B5}:	$\big\Uparrow$
+
+\xp \c{B6}:	$\big\updownarrow$
+
+\xp \c{B7}:	$\diamondsuit$
+
+\xp \c{B8}:	$\triangle$
+
+Those verticals that have a direction are inverted in inverted trees.
+
+\beginsection \TeX\ commands and the width of names.
+
+The width of the name assumed in formatting the tree is the number of
+characters in it, deducting for things assumed to be \TeX\ commands when
+one of the options -u or -t is in effect.
+The following do not count toward the width of the name when `tree' was
+given the -u or -t options, since they are assumed to be for \TeX\ and not
+to contribute to the actual printed width.
+\medskip
+{\advance\leftskip by36pt\advance\rightskip by36pt
+\item{(a)} backslash followed by a string of alphabetic characters then
+	   white spaces (any number of space, tabs, and newlines),
+	   except for the special combinations listed above; these are
+	   assumed to be \TeX\ command names)
+\item{(b)} backslash followed by left-quote, right-quote, period, `{\tt=}',
+	   `\up', `\tl' (\TeX\ diacritics)
+\item{(c)} left or right brace not preceded by backslash (\TeX\ grouping
+	   commands)
+\item{(d)} dollar-sign not preceded by backslash (\TeX\ math mode)
+\item{(e)} backslash followed by any non-alphabetic character
+
+}
+\medskip
+Note that there is no provision for \TeX\ commands that do contribute to
+the print-width of a name (e.g. {\tt\bs{TeX}}), which will cause the
+actual width of a name to be underestimated sometimes, or for arguments
+to \TeX\ commands (e.g. {\tt\bs{hbox} to 2em$\{\dots\}$}), which will
+cause the width to be underestimated sometimes.  The underestimation
+problem can be corrected for by padding with spaces (e.g.
+\bs{\ }\bs{\ }\bs{\ }\bs{TeX} instead of simply \bs{TeX}).
+
+For every three capital letters in a name (not counting `I'), the assumed
+print-width is increased by one-half em to compensate for the typical
+extra width of capitals in proportional fonts.
+\bigskip
+\rightline{---Greg Lee}
+\bye

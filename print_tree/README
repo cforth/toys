@@ -1,0 +1,273 @@
+
+Tree, a program for displaying trees.
+
+			Greg Lee, lee@uhccux.uhcc.hawaii.edu, 7/90
+
+
+			*                             *
+                                  Announcement         
+                        *        ///////\\\\\\        *
+                                /             \        
+                        *  Tree Drawing      Program  *
+                                \             /        
+                        *        \\\\\\\//////        *
+                                   Available           
+                        *                             *
+
+The above is from the following tree-definition:
+
+			\tree -b9
+(
+(*(*\O(*\O(*\O(*\O)))))
+	((Announcement\O(Available\I\O (Tree Drawing()) (\ \ \ \ Program()) ) ))
+(*(*\O(*\O(*\O(*\O)))))
+)
+
+
+The `tree' program formats trees for screen display or printing with
+TeX.  The program, supporting utilities, and accompanying documents are
+free and in the public domain.  If you distribute a modified version of
+`tree', please keep your version in the public domain.
+
+At the University of Hawaii, the tree program is available on the
+uhccux system in directory ~lingua/bin with source code and documents
+in directory ~lee/src/Tree.  And in the Linguistics Department, the
+program is available on uhl2 in directory /usr/local/bin with source
+code and documents in ~greg/Tree.
+
+The predecessor program to this was written by Chris Barker, the
+Linguistics Board at University of California, Santa Cruz, email:
+barker@ling.ucsc.edu.
+
+This version has been tested only on Unix:  SunOS 3.5, Ultrix 3.1, and
+SysV 3.50 (Unixpc).  It requires the `lex' utility to compile, or else
+`flex', which is the free version of Unix `lex' by Vern Pacson.  The
+Makefile is set up to use `flex'.  To compile the source, type "make",
+which will process the source code with flex then will invoke the C
+compiler.  This creates 3 programs:  `tree', `tpar', and `unpar'.  The
+last two are minor utilities that you may not have any need for; they
+are described below.  Typing "make tex" compiles `mdoc' and uses that
+and `tree' and `tpar' to create some .tex files with examples and
+a document on the tree program.
+
+Basic usage for screen display is:  "tree textfile", where the
+textfile has some trees.  After you've made the program, try displaying
+the example files with:
+
+	% tree sample
+	% tree texsample
+
+The texsample file is intended to illustrate printed output using TeX,
+which you can get with the following (adapted for your local conventions
+for using TeX and printing):
+
+	% tree -t texsample > texsample.tex
+	% tex texsample
+	% lpr -d texsample.dvi
+
+And you can follow the similar procedure for the file sample.  This
+should get you printout of trees done with horizontal and vertical
+lines.  If you have a PostScript printer, the following may work to get
+trees made with slanty lines:
+
+	% tree -u texsample > texsample.tex
+	% tex texsample
+	% lpr -d texsample.dvi
+
+That is, everything the same, except use `-u' instead of `-t'.  (`-t' is
+for TeX; the only logic to the `-u' is that `u' comes after `t'.) If
+this last doesn't work right, the most likely thing to have gone wrong
+is that your local PostScript driver program does not treat TeX \special
+commands, which I've used to embed PS code, in the same way that mine
+does.  If that's a problem, there are two things you can do about it.
+(1) Find out what should be in a TeX \special to tell your driver to
+just spit out literally into its output whatever it finds in a \special,
+then modify the Makefile or the C code in the source tex.c accordingly
+(see `SKEY' in the code), or (2) email me and I'll send you my PS driver
+program (which is a modification of the free dvi2ps program from MIT).
+
+The Makefile also provides for "make tex" to create TeXable files
+use.tex, sample.tex, texsample.tex, and ptsample.tex for a sort of user
+manual and some sample output.  If you can't get the `-u' option to
+work, you can change the definition of UT in the Makefile to -t.
+
+Tree has some options for modifying or decorating trees in various ways.
+Some of these can be used either for all the trees in a source text file
+by giving the option on the command line after `tree', or for some
+individual tree by giving the option after the `\tree' command within
+the text file.  For instance, if the text has
+
+	\tree -t (S (Q (did) (V' (you go))))
+
+then TeX code will be generated for this particular tree in the text,
+but not necessarily for other trees in that text file.  Here is another
+example:
+
+	% tree -L < filename
+	\tree -L (S(NP(N(features)))(V'(V(galore))))
+
+The first Unix command will have `tree' omit all connecting lines under
+nodes for all trees in the file `filename'.  The second, as a line in a
+text file processed by tree, will do that for just the one tree that
+follows.  There are other options that apply just to single nodes within
+a tree, which are given as backslash plus some capital letter.  As it
+happens, in this instance there is an option \L for individual nodes,
+also:
+
+	\tree (S(NP(N\L(features)))(V'(\L V(galore))))
+
+which omits lines under just the two nodes `N' and `V'.  The second \L
+in this example has to be separated by a space from the following V so
+`tree' can tell that this is not a TeX command with the name `LV'.  (If
+it happens that you need to use a TeX command with the name `L' in a
+node, you could use \\L for this, but it is necessary to use \\ for
+TeX commands only in such cases of conflict.)
+
+Here is a reference list of the options or commands for formatting
+individual nodes.  (See the man page and the "use" document for more
+info.) In this list, `<d>' is an optional single digit argument, and
+`<n>' is an obligatory non-negative integer argument.
+
+	  Command:	Option:	Function:
+
+     \D<d> "daughter"		label discontinuous daughter
+     \E    "even"	  -E	select basis for flatten command
+     \F    "flatten"	  -F	move nodes to lowest level
+     \H    "head"		center mother over this daughter
+     \I    "invert"	  -I	turn tree upside down
+     \L    "lexical"	  -L	don't put lines under nodes
+     \M<d> "mother"		label mother of discontinuous daughter
+     \O    "omit"	  -O	omit line above nodes
+     \P    "phantom"		as "omit" but retain spacing
+     \T    "triangle"	  -T	put triangles under nodes
+     \R    "relational"	  -R	put aligned verticals at right of nodes
+     \B<d> "boldness"	  -b<n> do shaded triangles or bold lines (see below)
+			  -g<n> use n as the minimal gap between nodes
+			  -v	don't suppress TeX commands on screen
+			  -q	suppress warnings
+			  -x	use IBM extended line drawing characters
+			  -X	same as -x, but format for WordStar
+
+All commands of the form backslash plus capital letter `tree' assumes
+are intended for it, and it eats them up without comment, even though
+in most cases they don't do anything.
+
+The option `-b<n>' has different effects depending on output is
+tty-style or TeX code.  The sample files have examples for the latter.
+For tty output, here is a series of trees showing how the connecting
+"lines" can be varied.  These are from the tree definition:
+
+  \tree (bold =<n>(family\T(Martha Henry))(uncle)(aunt)(kin(Fred)(Milly\H)))
+
+with values from 0 through 9 for <n> and with option `-b<n>':
+
+	              bold =0
+	     ____________|____________
+	     |       |       |       |
+	   family  uncle    aunt    kin
+	_____|______          _______|
+	|__________|          |      |
+	Martha Henry         Fred  Milly
+	              bold =1
+	     +-----------+-----------+
+	     |       |       |       |
+	   family  uncle    aunt    kin
+	+----+-----+          -------|
+	|----------|          |      |
+	Martha Henry         Fred  Milly
+	              bold =2
+	      ...........:........... 
+	     :       :       :       :
+	   family  uncle    aunt    kin
+	 ....:.....           .......:
+	::::::::::::          :      :
+	Martha Henry         Fred  Milly
+	              bold =3
+	     |||||||||||||||||||||||||
+	     |       |       |       |
+	   family  uncle    aunt    kin
+	||||||||||||          ||||||||
+	||||||||||||          |      |
+	Martha Henry         Fred  Milly
+	              bold =4
+	     :::::::::::::::::::::::::
+	     :       :       :       :
+	   family  uncle    aunt    kin
+	::::::::::::          ::::::::
+	::::::::::::          :      :
+	Martha Henry         Fred  Milly
+	              bold =5
+	      ........../ \.......... 
+	     /       :       :       \
+	   family  uncle    aunt    kin
+	 ..../\....           .......:
+	::::::::::::          /      *
+	Martha Henry         Fred  Milly
+	              bold =6
+	      __________/ \__________ 
+	     /       |       |       \
+	   family  uncle    aunt    kin
+	 ____/\____           _______|
+	||||||||||||          /      *
+	Martha Henry         Fred  Milly
+	              bold =7
+	      <<<<<<<<<<< >>>>>>>>>>> 
+	     /       |       |       \
+	   family  uncle    aunt    kin
+	 <<<<<>>>>>           <<<<<<<|
+	|----------|          /      *
+	Martha Henry         Fred  Milly
+	              bold =8
+	      ////////////\\\\\\\\\\\ 
+	     /       |       |       \
+	   family  uncle    aunt    kin
+	 /////\\\\\           ///////|
+	||||||||||||          /      *
+	Martha Henry         Fred  Milly
+	              bold =9
+	      ////////////\\\\\\\\\\\ 
+	     /       |       |       \
+	   family  uncle    aunt    kin
+	 /////\\\\\           ///////|
+	|**********|          /      *
+	Martha Henry         Fred  Milly
+
+The \B<d> command selects the different styles on a node-by-node
+basis, affecting the lines just below the node with the command.
+\B without argument is the same as \B9.
+
+The utilities `tpar' and `unpar' are for trees using indentation
+for indicating structure rather than parenthesization.  For instance,
+feed this to `tpar':
+
+	\tree
+	S
+	  NP
+	    Det\L - the
+	    N - rain
+	  VP - V - falls
+
+to get back a parenthesized version that you can give to `tree':
+
+	\tree
+        (S
+          (NP
+            (Det\L(the))
+            (N(rain)))
+          (VP(V(falls))))
+
+With the option `-v', `tpar' will put some ending parens on new lines,
+and with the option `-t' it will turn bracketed digits and i,j,k,x,y,z
+into the TeX code for subscripting the digit or letter, and also
+translate N',A',V',P' into TeX code for putting bars over the letters.
+The `unpar' utility translates the other way, substituting indentation
+for parenthesization and, with the `-t' option, going back to the
+bracket and prime notation from the TeX code.  The file tpsample has
+example trees in indented form.
+
+Bug reports and suggestions for changes are welcome.
+
+Greg Lee
+U.S.mail: 562 Moore Hall, Dept. of Linguistics, Univ. of Hawaii, HONO, HI 96822
+INTERNET: lee@uhccux.uhcc.hawaii.edu
+BITNET:   lee@uhccux

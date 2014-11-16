@@ -1,0 +1,458 @@
+.TH TREE 1 LOCAL
+.SH NAME
+tree, tpar
+.SH SYNOPSIS
+.B tree
+[ options ] [ files ]
+.br
+.B tpar
+[
+.B \-t
+] [
+.B \-v
+] [ files ]
+.br
+.B unpar
+[
+.B \-t
+]
+.B <
+file
+.SH DESCRIPTION
+.I Tree
+reformats trees in a text whose structure is given by parenthesization
+into trees displayed with horizontal and vertical lines (or diagonal
+lines) connecting the
+node names.
+The companion program
+.I tpar
+is an optional utility for adding parentheses to trees with structure
+indicated by indentation.
+See the example file ptsample and the comments at the beginning of
+the source tpar.l for more information.
+The other utility
+.I unpar
+does the opposite of
+.IR tpar :
+it removes parentheses.
+.PP
+.I Tree
+has 13 options:
+.TP
+.B \-t
+causes
+.I tree
+to emit
+.I TeX
+code.
+.TP
+.B \-u
+also produces
+.I TeX
+code, but with PostScript commands for
+diagonal lines.
+.TP
+.BR \-b <num>
+sets the blackness of triangles drawn under certain nodes (see below).
+For the
+.B \-t
+option, extra verticals fill in the base of ``triangles'', the
+spacing of them depending on <num>.
+For tty output, various characters are used to approximate connecting
+lines, again depending on <num>.
+.TP
+.B \-v
+displays
+.I TeX
+commands for tty output \- normally they are suppressed.
+.TP
+.BR \-g <num>
+uses <num> for gap separating subtrees in place of default value of 2.
+.TP
+.BR \-q
+suppresses warning messages that are otherwise issued when various
+circumstances suggest a possible problem with the definition of a
+tree.
+The warnings are given for blank lines, `\\tree' commands, or text
+after a node name when any of these are found within a tree definition.
+.TP
+.B \-O
+causes the lines connecting node names to be omitted.
+This option has the same effect as giving the `\\O' command
+for each node.
+.TP
+.B \-L
+omits the lines connecting nodes, leaving no vertical space
+where the lines would have been.
+This option has the same effect as giving the `\\L' command for each node.
+.TP
+.B \-T
+draws triangles under nodes instead of branches.
+This option has the same effect as giving the `\\T' command for each node.
+.TP
+.B \-I
+turns trees upside down.
+This option has the same effect as giving the `\\I' command for the top node
+(or the top nodes, in the case of side-by-side trees).
+.TP
+.B \-F
+lowers terminals to lowest level found in the subtree whose top node
+is marked with `\\E'', or else to the lowest level in the entire
+tree if `\\E' has not been used.  If a terminal has a node immediately
+above it with the `\\L' lexical command, this is lowered too.
+This option has the same effect as giving the `\\F' command for each
+terminal node (or lexical node above it).
+.TP
+.B \-E
+restricts the context for lowering with `\\F' commands or the
+.B \-F
+option to each subtree under a branching node.
+This option has the same effect as giving the `\\E' command for
+every branching node.
+.TP
+.B \-R
+places node names to the left of verticals.
+This option has the same effect as giving the `\\R' command for
+every non-terminal node.
+.TP
+.B \-x
+.TP
+.B \-X
+cause line drawing characters from the IBM-pc extended
+character set to be used for screen output.  The
+.B \-X
+option surrounds these with control characters suitable
+for WordStar files.
+.PP
+.I Tree
+processes the text in the files named on the command line,
+and the resulting text with the
+reformatted trees is produced on the standard output.
+If no file names are given on the command line, input
+text is assumed on the standard input.
+.sp
+.DS
+	% tree inputtextfile >outputtextfile
+.br
+	% tree <inputtextfile >outputtextfile
+.br
+	% tree -t old.tex >new.tex
+.DE
+.sp
+A tree in a text is introduced by the command `\\tree'.
+.sp
+.DS
+ (ex1)	\\tree (S(NP(John))(VP(runs)))
+.DE
+.sp
+The formatted tree will be indented by the space that separated the
+`\\tree' command from the left margin (8 spaces for the above example).
+The `\\tree' command may be followed by the same options that can
+be given on the command line.
+In case of a conflict, an option given in the text overrides
+one given on the command line.
+Nodes need not have names, but if the root node has no name, you need
+an extra pair of enclosing parentheses if the daughters of the
+root are to be connected by lines:
+.sp
+.DS
+ (ex2)	\\tree ((((John))((runs))))
+.DE
+.sp
+.PP
+After any options, the `\\tree' command must be followed by a tree.
+In the case of inappropriate options, or when the next
+non-whitespace character after the command and valid options is not
+a `(', the command is ignored (and it remains in the processed text).
+.sp
+.DS
+ (ex3)	\\tree \- this line will remain unchanged
+.DE
+.sp
+If what follows the command does begin like a tree, but does not
+have enough right parens to balance the left ones, an error is reported.
+.sp
+.DS
+ (ex4)	\\tree (S(NP(John)(VP(runs))) \- a bad tree missing
+.br
+		 a right paren
+.DE
+.sp
+Trees contain node names and (sub)trees.
+The name of the node comes before any sub-trees; text after a sub-tree
+not in parentheses is treated as a comment and is discarded.
+Since placing text in this position is not an ordinary way of putting
+comments into a tree definition, unless the
+.B \-q
+option is given, warning messages are issued when such text is found.
+.sp
+.DS
+ (ex5)	\\tree -q (a phrase composed of others(a phrase
+.br
+\ \ \ \ \ (a)(phrase))
+.br
+\ \ \ \ \ This is a comment.(composed) (of others
+.br
+\ \ \ \ \ (of)(others)) )
+.DE
+.sp
+Several trees can be placed side-by-side by giving no name to the
+topmost node:
+.sp
+.DS
+ (ex6)	\\tree ((S(John)(V(runs)(fast))) (==>)
+.br
+		(S(V(runs)(fast))(S(John)(does))))
+.DE
+.sp
+Spacing and new lines are generally not significant, except that spacing
+between parts of a node name causes a space to be part of the name (only
+a single space appears for multiple blanks or tabs).
+As in
+.IR TeX ,
+the percent character introduces a comment which continues through
+the end of the line.
+(ex7) produces the
+same tree as (ex1) above:
+.sp
+.DS
+ (ex7)  \\tree (S		% Comments like this
+                 (NP		% are skipped over.
+                   (John)
+                 )
+                 (VP
+                   (runs)
+                 )
+               )
+.DE
+.sp
+To include left or right paren as part of a node name, precede it with a
+back slash.
+.sp
+.DS
+ (ex8)	\\tree (NP (Det(John's \\(genitive\\)))
+.br
+		(N\\([+count]\\)(legs)) )
+.DE
+.sp
+A blank may also be made part of a node name by preceding it with a
+backslash (but this is not usually necessary).
+It is not necessary to use `\\\\' to
+make backslash part of a node name, although it is possible, since
+this will produce a single backslash in the output.
+A percent sign is counted a comment character, as in
+.IR TeX ,
+so to include a percent that will print, use `\\%'.
+When generating
+.I TeX
+code,
+.I tree
+will leave the backslash there, as well as the percent, so that
+.I TeX
+will print a percent.
+.PP
+The horizontal space separating subparts of a tree is by default
+two spaces.  This can be varied by calling
+.I tree
+with the
+.B -g
+(for ``gap'') option, for instance:
+.sp
+.DS
+	% tree -g4 infile
+.DE
+.sp
+gives twice the default gap.
+You might need to increase the gap when using
+.IR TeX ,
+because it's possible for node names to run into one another.
+.PP
+A node can be given a display attribute with a command of the
+form backslash plus capital letter.
+`\\T' draws a triangle under a node name instead of a vertical or
+diagonal lines,
+and `\\L' for `lexical' omits the vertical under a node with a single child.
+The triangle is for the common convention to indicate structure
+not given explicitly.
+Without the
+.B \-u
+option, it is not actually a triangle, but rather a box with a
+vertical at the top.
+With that option, it is an outlined triangle or, if the
+.B \-b
+option was given with a non-zero value, it is a filled triangle,
+with blackness determined by the number after
+.BR \-b .
+(This number is interpreted as a decimal fraction with higher
+values giving darker shades of gray; 8 is darker than 2,
+and 85 is just a tiny bit darker than 8.)
+.sp
+.DS
+ (ex9)	\\tree (\\T S (every) (good boy)
+.br
+                (VP (\\L V(does)) (\\L A(fine)) ))
+.DE
+.sp
+In this example, a triangle is drawn under the S-node, and the
+`does' and `fine' are placed immediately under the `V' and `A'
+with no connecting vertical line.
+(The `\\L' command is also useful for piling up several lines of
+text to avoid using too much horizontal space \- see the ptsample
+file for illustration.)
+.PP
+Other commands are `\\I' for inverting a tree,
+and `\\H' for designating a node as head of a branching
+constituent so that the mother node will be aligned over it.
+`\\R' puts a vertical at the right of a node and aligns upper
+and lower parts of the tree with this vertical, so that the node
+name appears to the left of connecting tree lines.
+`\\B' and `\\B0'-`\\B9' are ``bolding'' commands that vary the
+style of the connecting lines beneath a node.
+.PP
+There are two commands for getting related constituents on
+the same horizontal level.
+`\\F' moves a node with everything under it down, if necessary,
+to get a subtree down to level of the lowest node found elsewhere
+in the tree.
+`\\E' modifies the effect of `\\F' commands by restricting the
+downward displacement to the lowest node found in the subtree
+with the its top node marked `\\E'.
+.PP
+There is also the bare beginning of a facility for drawing
+discontinuous constituents.  The line that would ordinarily
+connect a node with the mother above it can be omitted
+with the `\\O' command.
+Alternatively, the line can be omitted with the `\\P' command,
+but then the name is also not displayed (though the tree is
+formatted as though there were a name present).
+Drawing a new line to connect a node
+to a node other than its natural mother requires PostScript
+commands, so it can only be done when using the
+.B \-u
+option (described below).
+You label the mother with `\\M'
+and label the (presumably) discontinuous daughter with `\\D'.
+A curvy line will then be drawn between the mother and the daughter.
+If you need to connect other pairs of nodes, you can add a single
+digit after the `\\M' and `\\D' (giving 10 more pairs of labels).
+Unfortunately, several
+daughters can be connected to the same mother in this way only
+when all the daughters save possibly one come lower in the tree
+than the mother or, if at the same level, to the right of the
+mother.
+It is not possible to connect more than one unnatural mother to a given
+daughter.
+Leaves cannot be unnatural mothers.
+.sp
+.DS
+ (ex10)	\\tree (S(PP\\O\\D(near)(him))(NP(John))
+.br
+                (VP\\M(saw)(a snake)))
+.DE
+.sp
+Here a line over `PP' is omitted and a curvy line drawn from the
+top of `PP', since it has the daughter label `\\D', to a position
+under `VP', since it has the corresponding mother label `\\M'.
+.PP
+The
+.I TeX
+code output with the
+.B \-t
+or
+.B \-u
+option is rather primitive, since
+.I tree
+uses a rough approximation for the widths of node names.
+The width of a
+node name is taken to be the number of characters in the name times the
+`en' space of the current font, the `en' space being half an `em' or
+`quad'.  Each line of print making up the tree is assumed to be 12
+points high when the current `ex' height is that of Computer Modern
+Roman at 10 points, and is adjusted proportionately for `ex' heights
+different from this.
+.PP
+The approximation for the width of names may be off by quite a bit when
+node names have a lot of capital letters, or when they contain
+.I TeX
+commands.
+To compensate for this,
+.I tree
+adds some extra space for names that have lots of caps,
+and it removes space taken up by
+.I TeX
+commands, on the assumption that
+.I TeX
+commands will not change the width of printed stuff (which
+assumption may easily be wrong, of course).
+.PP
+If you do put font changing commands into node names, it is not
+necessary to group them in braces to confine their effects to the
+node names, since
+.I tree
+adds braces around node names, anyway.
+Every line of a tree is a paragraph, so one way to control left
+indentation is to give `\\parindent' an appropriate value.
+Page breaks are prevented within a tree, so if you have not provided
+enough vertically stretchable space around trees, you may get
+.I TeX
+underfull vbox error messages, or, in the case of a tree too long
+for a page, a fatal error.
+.PP
+The
+.B \-u
+option works like the
+.B \-t
+option, except that for right-side up trees, instead of having
+.I TeX
+draw horizontal and vertical rules, PostScript commands for
+diagonal lines are issued.
+Naturally, this method of obtaining slanty lines is going
+to work only if you have a PostScript printer.
+The PostScript code is stuck inside
+.I TeX
+.B special
+commands, and the dvi-file translator program is expected
+just to include this code in its PostScript output.
+(Not all PS drivers for
+.I TeX
+do this, or do it in the same way.
+If it's a problem, email Greg for a version of
+.I dvi2ps
+that behaves right.)
+.SH BUGS
+Curvy lines from `\\M' and `\\D' are likely to run through node
+names.
+.PP
+The thickness of diagonal lines is not varied with different
+font sizes.
+But you could change it
+.I ad hoc
+by including in the text a command of the form:
+.br
+\ \ \ \ \ `\\special{<num> setlinewidth}'.
+.PP
+Triangles over two or more nodes are not wide enough.
+.PP
+Lowering a node by enclosing it in multiple parentheses just extends
+the vertical line above it, causing a corner with the \-u option.
+A curve would be nicer.
+.PP
+There are undocumented \-d debug and \-h help options.
+.PP
+Terminal nodes of inverted trees that are re-attached to empty nodes
+of a larger construction are not treated correctly by the `\\R'
+command or the \-R option.
+.PP
+A node name in the same row as a very high or deep name will have
+excessive white space above or below it.
+Fonts with small ex-heights have tree lines too close to the tops
+of capitals, and fonts with large ex-heights have them too far away.
+.SH "SEE ALSO"
+tex(1)
+.SH AUTHOR
+Greg Lee, U. Hawaii Dept. of Linguistics, lee@uhccux.uhcc.hawaii.edu
+.PP
+.I Tree
+was inspired by a predecessor program written by Chris Barker,
+Linguistics Board at University of California, Santa Cruz,
+barker@ling.ucsc.edu

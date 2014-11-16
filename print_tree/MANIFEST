@@ -1,0 +1,15 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ MANIFEST                   1	this list of files
+ Makefile                   1	
+ README                     1	
+ mdoc.l                     1	source code for mdoc (makes use.tre)
+ sample                     1	sample to run tree on
+ tex.c                      2	source code, #included in tree.l
+ texsample                  1	sample to run tree on
+ tpar.l                     1	source code for tpar
+ tpsample                   1	sample to run tpar and tree on
+ tree.1                     1	man page
+ tree.l                     3	source code for tree
+ unpar.l                    1	source code for unpar
+ use.raw                    2	document (run mdoc & tree, then TeX)

@@ -1,0 +1,114 @@
+
+Here are some example trees to display with the tree program.  First,
+the examples from the man page:
+
+ (ex1)	\tree (S(NP(John))(VP(runs)))
+
+ (ex2)	\tree ((((John)(runs))))
+
+%(ex3)	\tree \- this line will remain unchanged
+
+ (ex4) is not given, since it has an error
+
+ (ex5)	\tree -q (a phrase composed of others(a phrase
+		(a)(phrase))
+		This is a comment.(composed) (of others
+		(of)(others)) )
+
+ (ex6)	\tree ((S(John)(V(runs)(fast))) (==$>$)
+		(S(V(runs)(fast))(S(John)(does))))
+
+ (ex7)  \tree (S		% Comments like this
+                 (NP		% are skipped over.
+                   (John)
+                 )
+                 (VP
+                   (runs)
+                 )
+               )
+
+ (ex8)	\tree (NP (Det(John's \(genitive\)))
+		(N\([+count]\)(legs)) )
+
+ (ex9)	\tree (\T S (every) (good boy)
+                (VP (\L V(does)) (\L A(fine)) ))
+
+ (ex10)	\tree (S(PP\O\D(near)(him))(NP(John))
+                (VP\M(saw)(a snake)))
+
+Then here are a couple of trees from the sample file Jeff Goldberg
+distributed:
+
+(1) \tree
+(S (NP[+WH] (Who))
+   (S/NP (V[INV] (did))
+	 (NP (you))
+	 (VP[BSE]/NP (V[BSE] (see))
+		       (NP[NULL]/NP (e))
+	 )
+   )
+)
+
+(2) \tree
+(S (PP (P1 (P (on))
+	   (NP (which)
+	       (N1 (N (table)))
+	   )
+       )
+   )
+   (S/PP (V (do))
+	 (NP (you))
+	 (VP/PP (V (think))
+	     (S/PP (NP (Martha))
+		(VP/PP (V (believes))
+		    (S/PP (NP (Irving))
+			(VP/PP (V (put)) (NP (Det (the) (N1 (N (book)))))
+				 (PP/PP (e))
+			)
+		    )
+		)
+	    )
+	)
+    )
+)
+
+Chris Barker gave these examples (in a slightly different
+form):
+
+	\tree
+((S (NP (N) (PP (P) (NP)))
+    (VP (V) (PP (P) (NP))))
+
+ (\I S (\I NP (N) (\I PP (P) (NP)))
+    (VP (V) (\I PP (P) (NP)))))
+
+	\tree
+(\I\(mutakaatib\)\L
+	(u
+ (u ((C\O)(V)(C\O)))
+ (a (V) (C\O)
+    (V)
+    (V))
+(i ((C\O)(V)(C\O))))
+	)
+
+	\tree
+( (C
+     (u\I
+	(m)
+	(\O)	% leave space below first `V' in upper tree
+	(g)
+	(n)
+	(\O)	% leave space below second `V' in upper tree
+	(t)
+     )
+  )
+  (V)
+  (C ())	% empty node attaches to `g'
+  (C ())	% empty node attaches to `n'
+  (V)
+  (C ())	% empty node attaches to `t'
+  ((\O(s\O)))
+)
+
+\bye
