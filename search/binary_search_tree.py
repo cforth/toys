@@ -1,6 +1,7 @@
 #!usr/bin/env python3
 ## 二叉查找树
 import random
+import os
 
 class Node(object):
     """使用Node类模二叉树的节点
@@ -175,27 +176,9 @@ def delete(key, node):
     return node
 
 
-## test
-## 随机插入26个字母到二叉查找树
-char_table = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-char_index = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
-length = len(char_index)
-num = random.randint(0, length-1)
-index = char_index[num]
-root = Node(char_index[num], char_table[index], 1)
-char_index.pop(num)
-length -= 1
-
-for i in range(25):
-    num = random.randint(0, length-1)
-    index = char_index[num]
-    put(char_index[num], char_table[index], root)
-    char_index.pop(num)
-    length -= 1
-print('All nodes number: %d' % root.number)
-
-## 使用深度优先遍历和广度优先遍历二叉树
 def depth_first_search(root):
+    """使用深度优先遍历二叉树
+    """
     stack = []
     stack.append(root)
     while len(stack) != 0 :
@@ -208,7 +191,10 @@ def depth_first_search(root):
             stack.append(node.left)
     print('\n')
 
+
 def breadth_first_search(root):
+    """使用广度优先遍历二叉树
+    """
     quene = []
     quene.append(root)
     while len(quene) != 0 :
@@ -245,24 +231,62 @@ def print_tree(root):
             quene.append(node.right)
     print('\n')
 
-print('Depth first search:')
-depth_first_search(root)
-print('Breadth first search:')
-breadth_first_search(root)
 
-print('Print Tree:')
-print_tree(root)
-
-print('Max Key: %d' % get_max(root))
-print('Min Key: %d' % get_min(root))
-print('Floor key with 26: %d' % floor_key(26, root))
-print('Ceiling key with -1: %d' % ceiling_key(-1, root))
-
-print('Destroy Tree:')
-breadth_first_search(root)
-for i in range(26):
-    root = delete(i, root)
+def print_tree_r(root):
+    """生成符合打印tree结构图语法的字符串
+    打印tree结构图的工具在/print_tree/tree.exe
+    """
     if root != None:
-        breadth_first_search(root)
+        return '(' + root.value + print_tree_r(root.left) + print_tree_r(root.right) + ')'
     else:
-        print('Tree have been destroyed！')
+        return '()'
+
+
+########################################   
+## test
+## 随机插入26个字母到二叉查找树
+char_table = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+char_index = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+length = len(char_index)
+num = random.randint(0, length-1)
+index = char_index[num]
+root = Node(char_index[num], char_table[index], 1)
+char_index.pop(num)
+length -= 1
+
+for i in range(25):
+    num = random.randint(0, length-1)
+    index = char_index[num]
+    put(char_index[num], char_table[index], root)
+    char_index.pop(num)
+    length -= 1
+    
+def test(root):
+    print('All nodes number: %d' % root.number)
+    print('Depth first search:')
+    depth_first_search(root)
+    print('Breadth first search:')
+    breadth_first_search(root)
+
+    print('Print Tree:')
+    tree = '\\tree' + print_tree_r(root)
+    print(tree + '\n')
+
+    print('Max Key: %d' % get_max(root))
+    print('Min Key: %d' % get_min(root))
+    print('Floor key with 26: %d' % floor_key(26, root))
+    print('Ceiling key with -1: %d' % ceiling_key(-1, root))
+
+    print('Destroy Tree:')
+    breadth_first_search(root)
+    for i in range(26):
+        root = delete(i, root)
+        if root != None:
+            breadth_first_search(root)
+        else:
+            print('Tree have been destroyed！')
+
+## 打印树结构图，在终端上输入 python3 binary_search_tree.py | ../print_tree/tree.exe
+if __name__ == '__main__':
+    tree = '\\tree' + print_tree_r(root)
+    print(tree)
