@@ -232,6 +232,15 @@ def print_tree(root):
     print('\n')
 
 
+def inorder_traverse(root):
+    """中序遍历二叉树
+    """
+    if root != None:
+        inorder_traverse(root.left)
+        print (root.value, end=' ')
+        inorder_traverse(root.right)
+
+
 def print_tree_r(root):
     """生成符合打印tree结构图语法的字符串
     打印tree结构图的工具在/print_tree/tree.exe
@@ -267,8 +276,10 @@ def test(root):
     depth_first_search(root)
     print('Breadth first search:')
     breadth_first_search(root)
+    print('inorder traverse:')
+    inorder_traverse(root)
 
-    print('Print Tree:')
+    print('\n\nPrint Tree:')
     tree = '\\tree' + print_tree_r(root)
     print(tree + '\n')
 
