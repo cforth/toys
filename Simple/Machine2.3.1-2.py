@@ -1,7 +1,6 @@
 ## Virtual Machine 2.3.1
-## 小步语义
+## 小步语义  -- 表达式、语句
 ## python 3.4
-
 class Number(object):
     """ 数值符号类
     """
@@ -109,48 +108,61 @@ class Variable(object):
 
     def to_s(self):
         return str(self.name)
+    
+
+class DoNothing(object):
+    def to_s(self):
+        return 'do-nothing'
+
+    def __eq__(self, other_statement):
+        return isinstance(other_statement, DoNothing)
+
+    def reducible(self):
+        return False
+
+
+class Assign(object):
+    """ 变量赋值语句的实现
+    """
+    def __init__(self, name, expression):
+        self.name = name
+        self.expression = expression
+
+    def to_s(self):
+        return '{name} = {exp}'.format(name=self.name, exp=self.expression.to_s())
+
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        if self.expression.reducible():
+            return Assign(self.name, self.expression.reduce(environment)), environment
+        else:
+            return DoNothing(), dict(environment, **{self.name:self.expression})
 
 
 class Machine(object):
     """ 虚拟机
     """
-    def __init__(self, expression, environment):
-        self.expression = expression
+    def __init__(self, statement, environment):
+        self.statement = statement
         self.environment = environment
 
     def step(self):
-        self.expression = self.expression.reduce(self.environment)
+        self.statement, self.environment = self.statement.reduce(self.environment)
 
     def run(self):
-        while self.expression.reducible():
-            print(self.expression.to_s())
+        while self.statement.reducible():
+            print(self.statement.to_s(), end=', ')
+            print([(k, v.value) for k, v in self.environment.items()])
             self.step()
-        print(self.expression.value)
-            
+        print(self.statement.to_s(), end=', ')
+        print([(k, v.value) for k, v in self.environment.items()])
 
-## test
-## 在虚拟机中运行表达式
 
-##1 * 2 + 3 * 4 = 14
-Machine(Add(Multiply(Number(1), Number(2)),
-            Multiply(Number(3), Number(4))),
-        {}
-        ).run()
-
-print('')
-
-##5 < 2 + 2
+##test
+##x = 2, x = x + 1, x = 3
 Machine(
-    LessThan(Number(5), Add(Number(2), Number(2))),
-    {}
+    Assign('x', Add(Variable('x'), Number(1))),
+    {'x': Number(2)}
     ).run()
-
-print('')
-
-
-##x = 3; y = 4; x + y = 7
-Machine(
-    Add(Variable('x'), Variable('y')),
-    {'x':Number(3), 'y':Number(4)}
-    ).run()
-
