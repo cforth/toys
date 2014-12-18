@@ -1,4 +1,5 @@
-## Virtual Machine
+## Virtual Machine 2.3.1
+## 小步语义
 ## python 3.4
 
 class Number(object):
@@ -82,11 +83,11 @@ class LessThan(object):
     def reducible(self):
         return True
 
-    def reduce(self):
+    def reduce(self, environment):
         if self.left.reducible():
-            return LessThan(self.left.reduce(), self.right)
+            return LessThan(self.left.reduce(environment), self.right)
         elif self.right.reducible():
-            return LessThan(self.left, self.right.reduce())
+            return LessThan(self.left, self.right.reduce(environment))
         else:
             return Boolean(self.left.value < self.right.value)
 
@@ -131,18 +132,25 @@ class Machine(object):
 ## 在虚拟机中运行表达式
 
 ##1 * 2 + 3 * 4 = 14
-##Machine(Add(Multiply(Number(1), Number(2)),
-##            Multiply(Number(3), Number(4)))
-##        ).run()
-##
-##print('')
-##
-##5 
-##Machine(
-##    LessThan(Number(5), Add(Number(2), Number(2)))
-##    ).run()
-##Variable('x')
+Machine(Add(Multiply(Number(1), Number(2)),
+            Multiply(Number(3), Number(4))),
+        {}
+        ).run()
+
+print('')
+
+##5 < 2 + 2
+Machine(
+    LessThan(Number(5), Add(Number(2), Number(2))),
+    {}
+    ).run()
+
+print('')
+
+
+##x = 3; y = 4; x + y = 7
 Machine(
     Add(Variable('x'), Variable('y')),
     {'x':Number(3), 'y':Number(4)}
     ).run()
+
