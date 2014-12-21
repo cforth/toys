@@ -111,6 +111,8 @@ class Variable(object):
     
 
 class DoNothing(object):
+    """ 什么都不做
+    """
     def to_s(self):
         return 'do-nothing'
 
@@ -141,6 +143,30 @@ class Assign(object):
             return DoNothing(), dict(environment, **{self.name:self.expression})
 
 
+class If(object):
+    """ IF控制语句的实现
+    """
+    def __init__(self, condition, consequence, alternative):
+        self.condition = condition
+        self.consequence = consequence
+        self.alternative = alternative
+
+    def to_s(self):
+        return 'if (%s) {%s} else {%s}' % (self.condition.to_s(), self.consequence.to_s(), self.alternative.to_s())
+
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        if self.condition.reducible():
+            return If(self.condition.reduce(environment), self.consequence, self.alternative), environment
+        else:
+            if self.condition.value == Boolean(True).value:
+                return self.consequence, environment
+            elif self.condition.value == Boolean(False).value:
+                return self.alternative, environment
+
+
 class Machine(object):
     """ 虚拟机
     """
@@ -161,8 +187,21 @@ class Machine(object):
 
 
 ##test
-##x = 2, x = x + 1, x = 3
+##x = 2; x = x + 1; x = 3
 Machine(
     Assign('x', Add(Variable('x'), Number(1))),
     {'x': Number(2)}
+    ).run()
+
+print('')
+
+##x = True; if (x) {y = 1} else {y = 2}
+    
+Machine(
+    If(
+        Variable('x'),
+        Assign('y', Number(1)),
+        Assign('y', Number(2))
+        ),
+    {'x':Boolean(True)}
     ).run()
