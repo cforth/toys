@@ -1,5 +1,5 @@
 ## Virtual Machine 2.3.1
-## 小步语义  -- 表达式、语句
+## 小步语义  -- 表达式、语句、控制结构、语句序列
 ## python 3.4
 class Number(object):
     """ 数值符号类
@@ -167,6 +167,27 @@ class If(object):
                 return self.alternative, environment
 
 
+class Sequence(object):
+    """语句序列
+    """
+    def __init__(self, first, second):
+        self.first = first
+        self.second = second
+
+    def to_s(self):
+        return '{first}; {second}'.format(first=self.first.to_s(), second=self.second.to_s())
+
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        if self.first == DoNothing():
+            return self.second, environment
+        else:
+            reduced_first, reduced_environment = self.first.reduce(environment)
+            return Sequence(reduced_first, self.second), reduced_environment
+
+
 class Machine(object):
     """ 虚拟机
     """
@@ -180,10 +201,10 @@ class Machine(object):
     def run(self):
         while self.statement.reducible():
             print(self.statement.to_s(), end=', ')
-            print([(k, v.value) for k, v in self.environment.items()])
+            print(dict([(k, v.value) for k, v in self.environment.items()]))
             self.step()
         print(self.statement.to_s(), end=', ')
-        print([(k, v.value) for k, v in self.environment.items()])
+        print(dict([(k, v.value) for k, v in self.environment.items()]))
 
 
 ##test
@@ -195,8 +216,7 @@ Machine(
 
 print('')
 
-##x = True; if (x) {y = 1} else {y = 2}
-    
+##x = True; if (x) {y = 1} else {y = 2}   
 Machine(
     If(
         Variable('x'),
@@ -204,4 +224,15 @@ Machine(
         Assign('y', Number(2))
         ),
     {'x':Boolean(True)}
+    ).run()
+
+print('')
+
+##x = 1 + 1; y = x + 3
+Machine(
+    Sequence(
+        Assign('x', Add(Number(1), Number(1))),
+        Assign('y', Add(Variable('x'), Number(3)))
+        ),
+    {}
     ).run()
