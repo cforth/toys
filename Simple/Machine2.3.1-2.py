@@ -188,6 +188,23 @@ class Sequence(object):
             return Sequence(reduced_first, self.second), reduced_environment
 
 
+class While(object):
+    """ while循环语句实现
+    """
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+    def to_s(self):
+        return 'while (%s) {%s}' % (self.condition.to_s(), self.body.to_s())
+
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        return If(self.condition, Sequence(self.body, self), DoNothing()), environment
+
+
 class Machine(object):
     """ 虚拟机
     """
@@ -235,4 +252,15 @@ Machine(
         Assign('y', Add(Variable('x'), Number(3)))
         ),
     {}
+    ).run()
+
+print('')
+
+##while (x < 5) { x = x * 3 }
+Machine(
+    While(
+        LessThan(Variable('x'), Number(5)),
+        Assign('x', Multiply(Variable('x'), Number(3)))
+        ),
+    {'x':Number(1)}
     ).run()
