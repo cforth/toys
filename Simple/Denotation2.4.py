@@ -67,7 +67,8 @@ class Assign(object):
 ##数值表达式
 proc = Number(5).to_python()
 print(proc)
-num = eval(proc,{})      ##python的解释器中执行表达式的函数是exec()
+##python的解释器中执行表达式的函数是eval()
+num = eval(proc,{})
 print(num, end = '\n\n')
 
 ##布尔值表达式
@@ -108,8 +109,10 @@ print(result, end = '\n\n')
 environment = {'x':3}
 proc = Assign('y', Number(5)).to_python()
 print(proc)
-exec(proc, environment)  ##python的解释器中执行语句的函数是exec()
-##print(environment, end = '\n\n')  ##经过exec()后的environment字典，为了方便演示，下面的语句不显示默认的环境变量键值对
-print(dict([(k, v) for k, v in environment.items() if '__' not in k]), end = '\n\n')
+##python的解释器中执行语句的函数是exec()
+exec(proc, environment)
+##print(environment, end = '\n\n')
+##经过exec()后的environment字典，为了方便演示，下面的语句不显示内建的__builtins__对象名称与属性
+print(dict([(k, v) for k, v in environment.items() if not k == '__builtins__']), end = '\n\n')
 
 
