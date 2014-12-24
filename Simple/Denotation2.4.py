@@ -32,7 +32,9 @@ class Add(object):
         self.right = right
 
     def to_python(self):
-        return 'eval(' + repr(self.left.to_python()) + ') + eval(' + repr(self.right.to_python()) + ')'   
+        left = repr(self.left.to_python())
+        right = repr(self.right.to_python())
+        return 'eval({left}, globals()) + eval({right}, globals())'.format(**locals())  
 
 
 class Multiply(object):
@@ -41,7 +43,9 @@ class Multiply(object):
         self.right = right
 
     def to_python(self):
-        return 'eval(' + repr(self.left.to_python()) + ') * eval(' + repr(self.right.to_python()) + ')'   
+        left = repr(self.left.to_python())
+        right = repr(self.right.to_python())
+        return 'eval({left}, globals()) * eval({right}, globals())'.format(**locals())  
 
 
 class LessThan(object):
@@ -50,7 +54,9 @@ class LessThan(object):
         self.right = right
 
     def to_python(self):
-        return 'eval(' + repr(self.left.to_python()) + ') < eval(' + repr(self.right.to_python()) + ')'    
+        left = repr(self.left.to_python())
+        right = repr(self.right.to_python())
+        return 'eval({left}, globals()) < eval({right}, globals())'.format(**locals())   
 
 
 class Assign(object):
@@ -59,7 +65,9 @@ class Assign(object):
         self.expression = expression
 
     def to_python(self):
-        return self.name + ' = ' + self.expression.to_python()
+        name = self.name
+        expression = repr(self.expression.to_python())
+        return '{name} = eval({expression}, globals())'.format(**locals())
 
 
 class DoNothing(object):
@@ -74,7 +82,10 @@ class If(object):
         self.alternative = alternative
 
     def to_python(self):
-        return 'if ' + self.condition.to_python() + ' :\n    ' + self.consequence.to_python() + '\nelse:\n    ' + self.alternative.to_python()
+        condition = self.condition.to_python()
+        consequence = self.consequence.to_python()
+        alternative = self.alternative.to_python()
+        return 'if {condition} :\n    {consequence}\nelse:\n    {alternative}'.format(**locals())
 
 
 ##test
