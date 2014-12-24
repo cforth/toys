@@ -60,7 +60,22 @@ class Assign(object):
 
     def to_python(self):
         return self.name + ' = ' + self.expression.to_python()
-        
+
+
+class DoNothing(object):
+    def to_python(self):
+        return ''
+
+
+class If(object):
+    def __init__(self, condition, consequence, alternative):
+        self.condition = condition
+        self.consequence = consequence
+        self.alternative = alternative
+
+    def to_python(self):
+        return 'if ' + self.condition.to_python() + ' :\n    ' + self.consequence.to_python() + '\nelse:\n    ' + self.alternative.to_python()
+
 
 ##test
 
@@ -115,4 +130,10 @@ exec(proc, environment)
 ##经过exec()后的environment字典，为了方便演示，下面的语句不显示内建的__builtins__对象名称与属性
 print(dict([(k, v) for k, v in environment.items() if not k == '__builtins__']), end = '\n\n')
 
-
+##if语句
+environment = {'x':3, 'y':5}
+proc = If(LessThan(Variable('x'), Variable('y')), Assign('z', Number(1)), Assign('z', Number(0))).to_python()
+print(proc)
+exec(proc, environment)
+##print(environment, end = '\n\n')
+print(dict([(k, v) for k, v in environment.items() if not k == '__builtins__']), end = '\n\n')

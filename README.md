@@ -26,4 +26,4 @@ print_tree
 
 Simple
 -------------
-《计算的本质：深入剖析程序和计算机》中的Simple语言实现（Pyrhon版）
+《计算的本质：深入剖析程序和计算机》中的Simple语言实现（Python版）
