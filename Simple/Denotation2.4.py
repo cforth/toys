@@ -88,6 +88,28 @@ class If(object):
         return 'if {condition} :\n    {consequence}\nelse:\n    {alternative}'.format(**locals())
 
 
+class Sequence(object):
+    def __init__(self, first, second):
+        self.first = first
+        self.second = second
+
+    def to_python(self):
+        first = self.first.to_python()
+        second = self.second.to_python()
+        return '{first}\n{second}'.format(**locals())
+
+
+class While(object):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+    def to_python(self):
+        condition = self.condition.to_python()
+        body = self.body.to_python()
+        return 'while {condition}:\n    {body}'.format(**locals())
+
+
 ##test
 
 ##数值表达式
@@ -133,18 +155,35 @@ print(result, end = '\n\n')
 
 ##赋值语句
 environment = {'x':3}
-proc = Assign('y', Number(5)).to_python()
-print(proc)
+statement = Assign('y', Number(5)).to_python()
+print(statement)
 ##python的解释器中执行语句的函数是exec()
-exec(proc, environment)
+exec(statement, environment)
 ##print(environment, end = '\n\n')
 ##经过exec()后的environment字典，为了方便演示，下面的语句不显示内建的__builtins__对象名称与属性
 print(dict([(k, v) for k, v in environment.items() if not k == '__builtins__']), end = '\n\n')
 
 ##if语句
 environment = {'x':3, 'y':5}
-proc = If(LessThan(Variable('x'), Variable('y')), Assign('z', Number(1)), Assign('z', Number(0))).to_python()
-print(proc)
-exec(proc, environment)
-##print(environment, end = '\n\n')
+statement = If(LessThan(Variable('x'), Variable('y')), Assign('z', Number(1)), Assign('z', Number(0))).to_python()
+print(statement)
+exec(statement, environment)
 print(dict([(k, v) for k, v in environment.items() if not k == '__builtins__']), end = '\n\n')
+
+##语句序列
+environment = {'x':3, 'y':5, 'z':6}
+statement = Sequence(Assign('x', Number(1)), Assign('y', Number(2))).to_python()
+print(statement)
+exec(statement , environment)
+print(dict([(k, v) for k, v in environment.items() if not k == '__builtins__']), end = '\n\n')
+
+#while语句
+environment = {'x':1}
+statement = While(
+    LessThan(Variable('x'), Number(8)),
+    Assign('x', Multiply(Variable('x'), Number(3)))
+    ).to_python()
+print(statement)
+exec(statement , environment)
+print(dict([(k, v) for k, v in environment.items() if not k == '__builtins__']), end = '\n\n')
+
