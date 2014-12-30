@@ -38,7 +38,7 @@ class DFA(object):
         return self.current_state in self.accept_states
 
     def read_character(self, character):
-        self.current_state = rulebook.next_state(self.current_state, character)
+        self.current_state = self.rulebook.next_state(self.current_state, character)
 
     def read_string(self, string):
         for character in string:
