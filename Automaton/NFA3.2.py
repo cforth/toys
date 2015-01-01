@@ -30,10 +30,17 @@ class NFARulebook(object):
     def rules_for(self, state, character):
         return [rule for rule in self.rules if rule.applies_to(state, character)]
 
+    def follow_free_moves(self, states):
+        more_states = self.next_states(states, None)
+        if more_states - states == set():
+            return states
+        else:
+            return self.follow_free_moves(states | more_states)
+
 
 class NFA(object):
     def __init__(self, current_states, accept_states, rulebook):
-        self.current_states = current_states
+        self.current_states = rulebook.follow_free_moves(current_states)
         self.accept_states = accept_states
         self.rulebook = rulebook
 
@@ -66,7 +73,7 @@ class NFADesign(object):
         return nfa.accepting()
 
       
-##test
+##NFA
 rulebook = NFARulebook([
     FARule(1, 'a', 1), FARule(1, 'b', 1), FARule(1, 'b', 2),
     FARule(2, 'a', 3), FARule(2, 'b', 3),
@@ -82,3 +89,23 @@ nfa_design = NFADesign(1, [4], rulebook)
 print(nfa_design.accepts('bab'))
 print(nfa_design.accepts('bbbbbb'))
 print(nfa_design.accepts('bbabb'))
+
+##自由移动
+rulebook2 = NFARulebook([
+     FARule(1, None, 2), FARule(1, None, 4),
+     FARule(2, 'a', 3),
+     FARule(3, 'a', 2),
+     FARule(4, 'a', 5),
+     FARule(5, 'a', 6),
+     FARule(6, 'a', 4),
+     ])
+
+print(rulebook2.next_states(set([1]), None))
+print(rulebook2.follow_free_moves(set([1])))
+
+nfa_design2 = NFADesign(1,[2, 4], rulebook2)
+
+print(nfa_design2.accepts('aa'))
+print(nfa_design2.accepts('aaa'))
+print(nfa_design2.accepts('aaaaa'))
+print(nfa_design2.accepts('aaaaaa'))
