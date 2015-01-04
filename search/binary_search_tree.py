@@ -297,7 +297,11 @@ def test(root):
         else:
             print('Tree have been destroyed！')
 
-## 打印树结构图，在终端上输入 python3 binary_search_tree.py | ../print_tree/tree.exe
+## 打印树结构图
+## cd ./print_tree 
+## make tree 生成tree或tree.exe
+## cd ..
+## python3 binary_search_tree.py | ./print_tree/tree.exe
 if __name__ == '__main__':
     tree = '\\tree' + print_tree_r(root)
     print(tree)
