@@ -2,8 +2,6 @@
 ##3.2 非确定性有限自动机
 ##python 3.4.1
 
-from functools import reduce
-
 class FARule(object):
     def __init__(self, state, character, next_state):
         self.state = state
@@ -22,7 +20,10 @@ class NFARulebook(object):
         self.rules = rules
 
     def next_states(self, states, character):
-        return set(reduce(lambda x, y: x + y, map(lambda state: self.follow_rules_for(state, character), states)))
+        n = []
+        for s in map(lambda state: self.follow_rules_for(state, character), states):
+            n += s
+        return set(n)
 
     def follow_rules_for(self, state, character):
         return [rule.follow() for rule in self.rules_for(state, character)]
