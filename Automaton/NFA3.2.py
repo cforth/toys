@@ -52,7 +52,7 @@ class NFA(object):
             return False
 
     def read_character(self, character):
-        self.current_states = self.rulebook.next_states(self.current_states, character)
+        self.current_states = self.rulebook.next_states(self.rulebook.follow_free_moves(self.current_states), character)
 
     def read_string(self, string):
         for character in string:
