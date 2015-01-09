@@ -47,6 +47,7 @@ class NFA(object):
         self.rulebook = rulebook
 
     def accepting(self):
+        self.current_states = self.rulebook.follow_free_moves(self.current_states)
         if [state for state in self.current_states if state in self.accept_states]:
             return True
         else:
@@ -95,6 +96,7 @@ class Pattern(object):
 
 class Empty(Pattern):
     def __init__(self):
+        self.character = None
         self.precedence = 3
         
     def to_s(self):
@@ -154,6 +156,20 @@ class Choose(Pattern):
     def to_s(self):
         return '|'.join([pattern.bracket(self.precedence) for pattern in [self.first, self.second]])
 
+    def to_nfa_design(self):
+        first_nfa_design = self.first.to_nfa_design()
+        second_nfa_design = self.second.to_nfa_design()
+
+        start_state = object()
+        accept_states = first_nfa_design.accept_states + second_nfa_design.accept_states
+
+        rules = first_nfa_design.rulebook.rules + second_nfa_design.rulebook.rules
+        extra_rules = [FARule(start_state, None, nfa_design.start_state) for nfa_design in [first_nfa_design, second_nfa_design]]
+
+        rulebook = NFARulebook(rules + extra_rules)
+
+        return NFADesign(start_state, accept_states, rulebook)
+
 
 class Repeat(Pattern):
     def __init__(self, pattern):
@@ -162,6 +178,17 @@ class Repeat(Pattern):
 
     def to_s(self):
         return self.pattern.bracket(self.precedence) + '*'
+
+    def to_nfa_design(self):
+        pattern_nfa_design = self.pattern.to_nfa_design()
+
+        start_state = object()
+        accept_states = pattern_nfa_design.accept_states + [start_state]
+        rules = pattern_nfa_design.rulebook.rules
+        extra_rules = [FARule(accept_state, None, pattern_nfa_design.start_state) for accept_state in pattern_nfa_design.accept_states] + [FARule(start_state, None, pattern_nfa_design.start_state)]
+        rulebook = NFARulebook(rules + extra_rules)
+
+        return NFADesign(start_state, accept_states, rulebook)
 
 
 ##test
@@ -204,3 +231,34 @@ print(pattern)
 print(pattern.matches('a'))
 print(pattern.matches('ab'))
 print(pattern.matches('abc'))
+
+print('')
+pattern = Choose(Literal('a'),Literal('b'))
+print(pattern)
+print(pattern.matches('a'))
+print(pattern.matches('b'))
+print(pattern.matches('c'))
+
+print('')
+pattern = Repeat(Literal('a'))
+print(pattern)
+print(pattern.matches(''))
+print(pattern.matches('a'))
+print(pattern.matches('aaaa'))
+print(pattern.matches('b'))
+
+print('')
+pattern = Repeat(
+                Concatenate(
+                    Literal('a'),
+                    Choose(Empty(),Literal('b'))
+                    )
+                )
+print(pattern)
+print(pattern.matches(''))
+print(pattern.matches('a'))
+print(pattern.matches('ab'))
+print(pattern.matches('aba'))
+print(pattern.matches('abab'))
+print(pattern.matches('abaab'))
+print(pattern.matches('abba'))

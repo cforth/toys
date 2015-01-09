@@ -46,6 +46,7 @@ class NFA(object):
         self.rulebook = rulebook
 
     def accepting(self):
+        self.current_states = self.rulebook.follow_free_moves(self.current_states)
         if [state for state in self.current_states if state in self.accept_states]:
             return True
         else:
