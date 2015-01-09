@@ -21,10 +21,10 @@ class NFARulebook(object):
         self.rules = rules
 
     def next_states(self, states, character):
-        n = []
-        for s in map(lambda state: self.follow_rules_for(state, character), states):
-            n += s
-        return set(n)
+        nexts = []
+        for state in states:
+            nexts += self.follow_rules_for(state, character) 
+        return set(nexts)
 
     def follow_rules_for(self, state, character):
         return [rule.follow() for rule in self.rules_for(state, character)]
@@ -34,15 +34,15 @@ class NFARulebook(object):
 
     def follow_free_moves(self, states):
         more_states = self.next_states(states, None)
-        if more_states - states == set():
+        if more_states.issubset(states):
             return states
         else:
-            return self.follow_free_moves(states | more_states)
+            return self.follow_free_moves(states.union(more_states))
 
 
 class NFA(object):
     def __init__(self, current_states, accept_states, rulebook):
-        self.current_states = rulebook.follow_free_moves(current_states)
+        self.current_states = current_states
         self.accept_states = accept_states
         self.rulebook = rulebook
 
@@ -53,7 +53,10 @@ class NFA(object):
             return False
 
     def read_character(self, character):
-        self.current_states = self.rulebook.next_states(self.rulebook.follow_free_moves(self.current_states), character)
+        '''读取一个字符，获取通过自由移动能到达的所有状态集合，再计算出包含所有下一个状态的集合
+        '''
+        self.current_states = self.rulebook.follow_free_moves(self.current_states)
+        self.current_states = self.rulebook.next_states(self.current_states, character)
 
     def read_string(self, string):
         for character in string:
