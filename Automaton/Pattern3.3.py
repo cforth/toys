@@ -42,12 +42,15 @@ class NFARulebook(object):
 
 class NFA(object):
     def __init__(self, current_states, accept_states, rulebook):
-        self.current_states = rulebook.follow_free_moves(current_states)
+        self._current_states = current_states
         self.accept_states = accept_states
         self.rulebook = rulebook
 
+    @property
+    def current_states(self):
+        return self.rulebook.follow_free_moves(self._current_states)
+    
     def accepting(self):
-        self.current_states = self.rulebook.follow_free_moves(self.current_states)
         if [state for state in self.current_states if state in self.accept_states]:
             return True
         else:
@@ -56,8 +59,7 @@ class NFA(object):
     def read_character(self, character):
         '''读取一个字符，获取通过自由移动能到达的所有状态集合，再计算出包含所有下一个状态的集合
         '''
-        self.current_states = self.rulebook.follow_free_moves(self.current_states)
-        self.current_states = self.rulebook.next_states(self.current_states, character)
+        self._current_states = self.rulebook.next_states(self.current_states, character)
 
     def read_string(self, string):
         for character in string:
