@@ -42,7 +42,7 @@ class NFARulebook(object):
 
 class NFA(object):
     def __init__(self, current_states, accept_states, rulebook):
-        self.current_states = current_states
+        self.current_states = rulebook.follow_free_moves(current_states)
         self.accept_states = accept_states
         self.rulebook = rulebook
 
