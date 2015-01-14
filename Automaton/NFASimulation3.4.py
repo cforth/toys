@@ -15,6 +15,9 @@ class FARule(object):
     def follow(self):
         return self.next_state
 
+    def __str__(self):
+        return '<FARule #<Set: ' + str(self.state) + '> --' + str(self.character) + '--> #<Set: ' + str(self.next_state) + '>>'
+
 
 class NFARulebook(object):
     def __init__(self, rules):
@@ -38,6 +41,9 @@ class NFARulebook(object):
             return states
         else:
             return self.follow_free_moves(states.union(more_states))
+
+    def alphabet(self):
+        return(list(set([rule.character for rule in self.rules if  not rule.character == None])))
 
 
 class NFA(object):
@@ -83,6 +89,20 @@ class NFADesign(object):
         return nfa.accepting()
 
 
+class NFASimulation(object):
+    def __init__(self, nfa_design):
+        self.nfa_design = nfa_design
+
+    def next_state(self, state, character):
+        nfa = self.nfa_design.to_nfa(state)
+        nfa.read_character(character)
+        return nfa.current_states
+
+    def rules_for(self, state):
+        return [FARule(state, character, self.next_state(state, character)) for character in self.nfa_design.rulebook.alphabet()]
+
+
+
 ##test
 rulebook = NFARulebook([
                     FARule(1, 'a', 1), FARule(1, 'a', 2), FARule(1, None, 2),
@@ -95,6 +115,24 @@ print(nfa_design.to_nfa().current_states)
 print(nfa_design.to_nfa(set([2])).current_states)
 print(nfa_design.to_nfa(set([3])).current_states)
 
+print('')
 nfa = nfa_design.to_nfa(set([2, 3]))
 nfa.read_character('b')
 print(nfa.current_states)
+
+print('')
+simulation = NFASimulation(nfa_design)
+print(simulation.next_state(set([1, 2]), 'a'))
+print(simulation.next_state(set([1, 2]), 'b'))
+print(simulation.next_state(set([3, 2]), 'b'))
+print(simulation.next_state(set([1, 3, 2]), 'b'))
+print(simulation.next_state(set([1, 3, 2]), 'a'))
+
+print('')
+print(rulebook.alphabet())
+for r in simulation.rules_for(set([1, 2])):
+    print(r)
+
+print('')
+for r in simulation.rules_for(set([3, 2])):
+    print(r)
