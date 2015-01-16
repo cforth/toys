@@ -2,6 +2,7 @@
 ##3.4 等价性
 ##python 3.4.1
 
+from pprint import pprint
 ##NFA
 class FARule(object):
     def __init__(self, state, character, next_state):
@@ -16,7 +17,12 @@ class FARule(object):
         return self.next_state
 
     def __str__(self):
-        return '<FARule #<Set: ' + str(self.state) + '> --' + str(self.character) + '--> #<Set: ' + str(self.next_state) + '>>'
+        state = self.state
+        character = self.character
+        next_state = self.next_state
+        return '<FARule #<Set: {state}> --{character}--> #<Set: {next_state}>>'.format(**locals())
+
+    __repr__ = __str__
 
 
 class NFARulebook(object):
@@ -99,7 +105,8 @@ class NFASimulation(object):
         return nfa.current_states
 
     def rules_for(self, state):
-        return [FARule(state, character, self.next_state(state, character)) for character in self.nfa_design.rulebook.alphabet()]
+        return [FARule(state, character, self.next_state(state, character))
+                for character in self.nfa_design.rulebook.alphabet()]
 
 
 
@@ -130,9 +137,7 @@ print(simulation.next_state(set([1, 3, 2]), 'a'))
 
 print('')
 print(rulebook.alphabet())
-for r in simulation.rules_for(set([1, 2])):
-    print(r)
+pprint(simulation.rules_for(set([1, 2])))
 
 print('')
-for r in simulation.rules_for(set([3, 2])):
-    print(r)
+pprint(simulation.rules_for(set([3, 2])))
