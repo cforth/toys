@@ -108,6 +108,21 @@ class NFASimulation(object):
         return [FARule(state, character, self.next_state(state, character))
                 for character in self.nfa_design.rulebook.alphabet()]
 
+    def discover_states_and_rules(self, states):
+        rules = []
+        for state in states:
+            rules += self.rules_for(state)  
+        more_states = [rule.follow() for rule in rules]
+
+        temp = []
+        for s in more_states:
+            if s not in states:
+                temp += [s]
+        
+        if temp:        
+            return self.discover_states_and_rules(states + temp)
+        else:
+            return [states, rules]
 
 
 ##test
@@ -141,3 +156,8 @@ pprint(simulation.rules_for(set([1, 2])))
 
 print('')
 pprint(simulation.rules_for(set([3, 2])))
+
+print('')
+start_state = nfa_design.to_nfa().current_states
+print(start_state)
+pprint(simulation.discover_states_and_rules([start_state]))
