@@ -31,5 +31,9 @@ Simple
 
 Automaton
 -------------
-《计算的本质：深入剖析程序和计算机》中第三章的自动机实现。
-包含了确定性有限自动机（Deterministic Finite Automaton，DFA）、非确定性有限自动机（Nondeterministic Finite Automata）、正则表达式的实现。
+《计算的本质：深入剖析程序和计算机》中第三章以及第四章的自动机实现。
+1. 确定性有限自动机（Deterministic Finite Automaton，DFA）
+2. 非确定性有限自动机（Nondeterministic Finite Automata，NFA）
+3. 正则表达式的实现
+4. NFA与DFA的等价性
+5. 确定性下推自动机（Deterministic PushDown Automaton，DPDA）
