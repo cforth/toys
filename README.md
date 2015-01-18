@@ -2,7 +2,7 @@
 =====
 
 作者:十八哥  
-E-mail:cforth<at>163.com  
+E-mail:cforth [at] 163.com  
 主要是Python写的算法与数据结构练习代码，还有《计算的本质：深入剖析程序和计算机》这本书中的演示代码。书中是Ruby语言实现的，我改写成了Python语言实现。
 
 
