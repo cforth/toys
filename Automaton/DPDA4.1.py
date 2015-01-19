@@ -85,7 +85,41 @@ class PDARule(object):
         push_characters={push_chars}'.format(**locals())
 
     __repr__ = __str__
-    
+
+
+class DPDARulebook(object):
+    def __init__(self, rules):
+        self.rules = rules
+
+    def next_configuration(self, configuration, character):
+        return self.rule_for(configuration, character).follow(configuration)
+
+    def rule_for(self, configuration, character):
+        for rule in self.rules:
+            if rule.applies_to(configuration, character):
+                return rule
+
+
+class DPDA(object):
+    def __init__(self, current_configuration, accept_states, rulebook):
+        self.current_configuration = current_configuration
+        self.accept_states = accept_states
+        self.rulebook = rulebook
+
+    @property
+    def accepting(self):
+        if self.current_configuration.state in self.accept_states:
+            return True
+        else:
+            return False
+
+    def read_character(self, character):
+        self.current_configuration = self.rulebook.next_configuration(self.current_configuration, character)
+
+    def read_string(self, string):
+        for char in string:
+            self.read_character(char)
+
 
 ## UnitTest
 import unittest
@@ -109,6 +143,34 @@ class TestDPDA(unittest.TestCase):
         self.assertEqual(rule.applies_to(configuration, '('), True)
 
         self.assertEqual(str(rule.follow(configuration)), '#<struct PDAConfiguration state=2, stack=#<Stack (b)$>>')
+
+    def test_DPDARulebook(self):
+        rulebook = DPDARulebook([
+            PDARule(1, '(', 2, '$', ['b', '$']),
+            PDARule(2, '(', 2, 'b', ['b', 'b']),
+            PDARule(2, ')', 2, 'b', []),
+            PDARule(2, None, 1, '$', ['$'])
+        ])
+        configuration = PDAConfiguration(1, Stack(['$']))
+        configuration = rulebook.next_configuration(configuration, '(')
+        self.assertEqual(str(configuration), '#<struct PDAConfiguration state=2, stack=#<Stack (b)$>>')
+        configuration = rulebook.next_configuration(configuration, '(')
+        self.assertEqual(str(configuration), '#<struct PDAConfiguration state=2, stack=#<Stack (b)b$>>')
+        configuration = rulebook.next_configuration(configuration, ')')
+        self.assertEqual(str(configuration), '#<struct PDAConfiguration state=2, stack=#<Stack (b)$>>')
+
+    def test_DPDA(self):
+        rulebook = DPDARulebook([
+            PDARule(1, '(', 2, '$', ['b', '$']),
+            PDARule(2, '(', 2, 'b', ['b', 'b']),
+            PDARule(2, ')', 2, 'b', []),
+            PDARule(2, None, 1, '$', ['$'])
+        ])
+        dpda = DPDA(PDAConfiguration(1, Stack(['$'])), [1], rulebook)
+        self.assertEqual(dpda.accepting, True)
+        dpda.read_string('(()')
+        self.assertEqual(dpda.accepting, False)
+        self.assertEqual(str(dpda.current_configuration), '#<struct PDAConfiguration state=2, stack=#<Stack (b)$>>')
         
 
 if __name__ == '__main__':
