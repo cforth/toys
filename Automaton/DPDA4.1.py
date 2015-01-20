@@ -42,11 +42,11 @@ class PDAConfiguration(object):
 
     @property
     def stuck(self):
-        return PDAConfiguration(self.STUCK_STATE, self.stack)
+        return PDAConfiguration(self.__class__.STUCK_STATE, self.stack)
 
     @property
     def if_stuck(self):
-        return self.state == self.STUCK_STATE
+        return self.state == self.__class__.STUCK_STATE
 
     def __str__(self):
         state = self.state
