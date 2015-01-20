@@ -88,6 +88,8 @@ class PDARule(object):
 
 
 class DPDARulebook(object):
+    """ The realization of DPDA-Rule-Book
+    """
     def __init__(self, rules):
         self.rules = rules
 
@@ -98,13 +100,31 @@ class DPDARulebook(object):
         for rule in self.rules:
             if rule.applies_to(configuration, character):
                 return rule
+        return None
+
+    def applies_to(self, configuration, character):
+        return self.rule_for(configuration, character) != None
+
+    def follow_free_moves(self, configuration):
+        if self.applies_to(configuration, None):
+            return self.follow_free_moves(self.next_configuration(configuration, None))
+        else:
+            return configuration
 
 
 class DPDA(object):
+    """ Use the rule book to construct a DPDA object.
+        It will be reads characters from the input,
+        tracking machine's current configuration at the same time. 
+    """
     def __init__(self, current_configuration, accept_states, rulebook):
-        self.current_configuration = current_configuration
+        self._current_configuration = current_configuration
         self.accept_states = accept_states
         self.rulebook = rulebook
+
+    @property
+    def current_configuration(self):
+        return self.rulebook.follow_free_moves(self._current_configuration)
 
     @property
     def accepting(self):
@@ -114,11 +134,11 @@ class DPDA(object):
             return False
 
     def read_character(self, character):
-        self.current_configuration = self.rulebook.next_configuration(self.current_configuration, character)
+        self._current_configuration = self.rulebook.next_configuration(self.current_configuration, character)
 
     def read_string(self, string):
         for char in string:
-            self.read_character(char)
+            self.read_character(char) 
 
 
 ## UnitTest
@@ -171,7 +191,33 @@ class TestDPDA(unittest.TestCase):
         dpda.read_string('(()')
         self.assertEqual(dpda.accepting, False)
         self.assertEqual(str(dpda.current_configuration), '#<struct PDAConfiguration state=2, stack=#<Stack (b)$>>')
-        
+
+    def test_follow_free_moves(self):
+        rulebook = DPDARulebook([
+            PDARule(1, '(', 2, '$', ['b', '$']),
+            PDARule(2, '(', 2, 'b', ['b', 'b']),
+            PDARule(2, ')', 2, 'b', []),
+            PDARule(2, None, 1, '$', ['$'])
+        ])
+        configuration = PDAConfiguration(2, Stack(['$']))
+        self.assertEqual(str(configuration), '#<struct PDAConfiguration state=2, stack=#<Stack ($)>>')
+        self.assertEqual(str(rulebook.follow_free_moves(configuration)), '#<struct PDAConfiguration state=1, stack=#<Stack ($)>>')
+
+    def test_DPDA_follow_free_moves(self):
+        rulebook = DPDARulebook([
+            PDARule(1, '(', 2, '$', ['b', '$']),
+            PDARule(2, '(', 2, 'b', ['b', 'b']),
+            PDARule(2, ')', 2, 'b', []),
+            PDARule(2, None, 1, '$', ['$'])
+        ])
+        dpda = DPDA(PDAConfiguration(1, Stack(['$'])), [1], rulebook)
+        dpda.read_string('(()(')
+        self.assertEqual(dpda.accepting, False)
+        self.assertEqual(str(dpda.current_configuration), '#<struct PDAConfiguration state=2, stack=#<Stack (b)b$>>')
+        dpda.read_string('))()')
+        self.assertEqual(dpda.accepting, True)
+        self.assertEqual(str(dpda.current_configuration), '#<struct PDAConfiguration state=1, stack=#<Stack ($)>>')
+    
 
 if __name__ == '__main__':
     unittest.main()
