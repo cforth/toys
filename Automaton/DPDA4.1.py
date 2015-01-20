@@ -34,9 +34,19 @@ class Stack(object):
 class PDAConfiguration(object):
     """ Used to store the PDA configuration (a state and a stack)
     """
+    STUCK_STATE = object()
+    
     def __init__(self, state, stack):
         self.state = state
         self.stack = stack
+
+    @property
+    def stuck(self):
+        return PDAConfiguration(self.STUCK_STATE, self.stack)
+
+    @property
+    def if_stuck(self):
+        return self.state == self.STUCK_STATE
 
     def __str__(self):
         state = self.state
@@ -133,12 +143,44 @@ class DPDA(object):
         else:
             return False
 
+    def next_configuration(self, character):
+        if self.rulebook.applies_to(self.current_configuration, character):
+            return self.rulebook.next_configuration(self.current_configuration, character)
+        else:
+            return self.current_configuration.stuck
+        
+    @property
+    def if_stuck(self):
+        return self.current_configuration.if_stuck
+
     def read_character(self, character):
-        self._current_configuration = self.rulebook.next_configuration(self.current_configuration, character)
+        self._current_configuration = self.next_configuration(character)
 
     def read_string(self, string):
         for char in string:
-            self.read_character(char) 
+            if not self.if_stuck:
+                self.read_character(char)
+
+
+class DPDADesign(object):
+    """ DPDA package into the DPDADesign
+    """
+    def __init__(self, start_state, bottom_character, accept_states, rulebook):
+        self.start_state = start_state
+        self.bottom_character = bottom_character
+        self.accept_states = accept_states
+        self.rulebook = rulebook
+
+    def accepts(self, string):
+        dpda = self.to_dpda
+        dpda.read_string(string)
+        return dpda.accepting
+
+    @property
+    def to_dpda(self):
+        start_stack = Stack([self.bottom_character])
+        start_configuration = PDAConfiguration(self.start_state, start_stack)
+        return DPDA(start_configuration, self.accept_states, self.rulebook)
 
 
 ## UnitTest
@@ -217,7 +259,33 @@ class TestDPDA(unittest.TestCase):
         dpda.read_string('))()')
         self.assertEqual(dpda.accepting, True)
         self.assertEqual(str(dpda.current_configuration), '#<struct PDAConfiguration state=1, stack=#<Stack ($)>>')
-    
+
+    def test_DPDADesign(self):
+        rulebook = DPDARulebook([
+            PDARule(1, '(', 2, '$', ['b', '$']),
+            PDARule(2, '(', 2, 'b', ['b', 'b']),
+            PDARule(2, ')', 2, 'b', []),
+            PDARule(2, None, 1, '$', ['$'])
+        ])
+        dpda_design = DPDADesign(1, '$', [1], rulebook)
+        self.assertEqual(dpda_design.accepts('(((((((((())))))))))'), True)
+        self.assertEqual(dpda_design.accepts('()(())((()))(()(()))'), True)
+        self.assertEqual(dpda_design.accepts('(()(()(()()(()()))()'), False)
+
+    def test_DPDA_stuck(self):
+       rulebook = DPDARulebook([
+            PDARule(1, '(', 2, '$', ['b', '$']),
+            PDARule(2, '(', 2, 'b', ['b', 'b']),
+            PDARule(2, ')', 2, 'b', []),
+            PDARule(2, None, 1, '$', ['$'])
+        ])
+       dpda = DPDA(PDAConfiguration(1, Stack(['$'])), [1], rulebook)
+       dpda_design = DPDADesign(1, '$', [1], rulebook)
+       dpda.read_string('())')
+       self.assertEqual(dpda.accepting, False)
+       self.assertEqual(dpda.if_stuck, True)
+       self.assertEqual(dpda_design.accepts('())'), False)
+
 
 if __name__ == '__main__':
     unittest.main()
