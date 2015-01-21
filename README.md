@@ -55,3 +55,4 @@ Automaton
 3. [正则表达式的实现](https://github.com/cforth/toys/blob/master/Automaton/Pattern3.3.py)  
 4. [NFA与DFA的等价性](https://github.com/cforth/toys/blob/master/Automaton/NFASimulation3.4.py)  
 5. [确定性下推自动机（Deterministic PushDown Automaton，DPDA）](https://github.com/cforth/toys/blob/master/Automaton/DPDA4.1.py)  
+6. [非确定性下推自动机（Nondeterministic Pushdown Automaton，NPDA）](https://github.com/cforth/toys/blob/master/Automaton/NPDA4.2.py)
