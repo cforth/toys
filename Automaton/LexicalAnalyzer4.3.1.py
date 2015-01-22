@@ -1,4 +1,4 @@
-#!'usr'bin'env python3.4
+#!/usr/bin/env python3.4
 
 """Lexical Analyzer"""
 
@@ -55,8 +55,9 @@ class LexicalAnalyzer(object):
         return rule['token']
 
     def rule_matching(self, string):
-        matches = [self.match_at_beginning(rule['pattern'], string) for rule in self.__class__.GRAMMAR]
-        rules_with_matches = [[rule, match] for rule, match in zip(self.__class__.GRAMMAR, matches) if match != None]
+        grammar = self.__class__.GRAMMAR
+        matches = [self.match_at_beginning(rule['pattern'], string) for rule in grammar]
+        rules_with_matches = [[rule, match] for rule, match in zip(grammar, matches) if match != None]
         return self.rule_with_longest_match(rules_with_matches)
 
     def match_at_beginning(self, pattern, string):
