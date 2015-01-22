@@ -27,7 +27,7 @@ class LexicalAnalyzer(object):
         { 'token': '*', 'pattern': r'\*' }, # 乘号
         { 'token': '<', 'pattern': r'\<' }, # 小于号
         { 'token': 'n', 'pattern': r'[0-9]+' }, # 数字
-        { 'token': 'b', 'pattern': r'True|False' }, # 布尔值
+        { 'token': 'b', 'pattern': r'true|false' }, # 布尔值
         { 'token': 'v', 'pattern': r'[a-z]+' } # 变量名
     ]
     
@@ -86,3 +86,11 @@ print(LexicalAnalyzer('while (x < 5) { x = x * 3 }').analyze)
 print('\n')
 print('if (x < 10) { y = true; x = 0 } else { do-nothing }')
 print(LexicalAnalyzer('if (x < 10) { y = true; x = 0 } else { do-nothing }').analyze)
+
+print('\n')
+print('x = false')
+print(LexicalAnalyzer('x = false').analyze)
+
+print('\n')
+print('x = falsehood')
+print(LexicalAnalyzer('x = falsehood').analyze)
