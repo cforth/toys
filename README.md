@@ -1,4 +1,4 @@
-算法与数据结构练习（Python版）
+算法与数据结构练习（Python3）
 =====
 
 作者:十八哥  
@@ -56,3 +56,4 @@ Automaton
 4. [NFA与DFA的等价性](https://github.com/cforth/toys/blob/master/Automaton/NFASimulation3.4.py)  
 5. [确定性下推自动机（Deterministic PushDown Automaton，DPDA）](https://github.com/cforth/toys/blob/master/Automaton/DPDA4.1.py)  
 6. [非确定性下推自动机（Nondeterministic Pushdown Automaton，NPDA）](https://github.com/cforth/toys/blob/master/Automaton/NPDA4.2.py)
+7. [词法分析（Lexical Analyzer）](https://github.com/cforth/toys/blob/master/Automaton/LexicalAnalyzer4.3.1.py)
