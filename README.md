@@ -1,7 +1,7 @@
 算法与数据结构练习（Python3）
 =====
 
-作者:十八哥  
+作者:Chai Fei  
 E-mail:cforth [at] 163.com  
 主要是Python写的算法与数据结构练习代码，还有《计算的本质：深入剖析程序和计算机》这本书中的演示代码。书中是Ruby语言实现的，我改写成了Python语言实现。
 
@@ -40,7 +40,7 @@ search/print_tree
 
 Simple
 -------------
-《计算的本质：深入剖析程序和计算机》中第二章的Simple语言实现。  
+[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第二章的Simple语言实现。  
 1. [小步操作语义-表达式](https://github.com/cforth/toys/blob/master/Simple/Machine2.3.1-1.py)    
 2. [小步操作语义-语句](https://github.com/cforth/toys/blob/master/Simple/Machine2.3.1-2.py)   
 3. [大步操作语义](https://github.com/cforth/toys/blob/master/Simple/Evaluate2.3.2.py)  
@@ -49,7 +49,7 @@ Simple
 
 Automaton
 -------------
-《计算的本质：深入剖析程序和计算机》中第三章以及第四章的自动机实现。  
+[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第三章以及第四章的自动机实现。  
 1. [确定性有限自动机（Deterministic Finite Automaton，DFA）](https://github.com/cforth/toys/blob/master/Automaton/DFA3.1.py)  
 2. [非确定性有限自动机（Nondeterministic Finite Automata，NFA）](https://github.com/cforth/toys/blob/master/Automaton/NFA3.2.py)  
 3. [正则表达式的实现](https://github.com/cforth/toys/blob/master/Automaton/Pattern3.3.py)  
