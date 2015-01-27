@@ -62,5 +62,5 @@ Automaton
 
 Turing
 -------------
-[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第五章的图灵机实现。
+[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第五章的图灵机实现。   
 1. [确定型图灵机（Deterministic Turing Machine，DTM）](https://github.com/cforth/toys/blob/master/Turing/DTM.py)  
