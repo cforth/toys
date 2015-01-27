@@ -58,3 +58,9 @@ Automaton
 6. [非确定性下推自动机（Nondeterministic Pushdown Automaton，NPDA）](https://github.com/cforth/toys/blob/master/Automaton/NPDA4.2.py)  
 7. [词法分析（Lexical Analyzer）](https://github.com/cforth/toys/blob/master/Automaton/LexicalAnalyzer4.3.1.py)  
 8. [语法分析（Grammar Analyzer）](https://github.com/cforth/toys/blob/master/Automaton/GrammarAnalyzer4.3.2.py)
+
+
+Turing
+-------------
+[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第五章的图灵机实现。
+1. [确定型图灵机（Deterministic Turing Machine，DTM）](https://github.com/cforth/toys/blob/master/Turing/DTM.py)  
