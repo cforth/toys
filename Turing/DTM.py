@@ -199,6 +199,48 @@ class TestDTM(unittest.TestCase):
         self.assertEqual(dtm.accepting, False)
         self.assertEqual(dtm.if_stuck, True)
 
+    def test_aaabbbccc(self):
+        rulebook = DTMRulebook([
+            # 状态1：向右扫描，查找a
+            TMRule(1, 'X', 1, 'X', 'right'), # 跳过 X
+            TMRule(1, 'a', 2, 'X', 'right'), # 删除 a，进入状态 2
+            TMRule(1, '_', 6, '_', 'left'), # 查找空格，进入状态 6 （接受）
+
+            # 状态2：向右扫描，查找b
+            TMRule(2, 'a', 2, 'a', 'right'), # 跳过 a
+            TMRule(2, 'X', 2, 'X', 'right'), # 跳过 X
+            TMRule(2, 'b', 3, 'X', 'right'), # 删除 b，进入状态 3
+
+            # 状态3：向右扫描，查找c
+            TMRule(3, 'b', 3, 'b', 'right'), # 跳过 b
+            TMRule(3, 'X', 3, 'X', 'right'), # 跳过 X
+            TMRule(3, 'c', 4, 'X', 'right'), # 删除 c，进入状态 4
+
+            # 状态4：向右扫描，查找字符串结束标记
+            TMRule(4, 'c', 4, 'c', 'right'), # 跳过 c
+            TMRule(4, '_', 5, '_', 'left'), # 查找空格，进入状态 5
+
+            # 状态5：向左扫描，查找字符串开始标记
+            TMRule(5, 'a', 5, 'a', 'left'), # 跳过 a
+            TMRule(5, 'b', 5, 'b', 'left'), # 跳过 b
+            TMRule(5, 'c', 5, 'c', 'left'), # 跳过 c
+            TMRule(5, 'X', 5, 'X', 'left'), # 跳过 X
+            TMRule(5, '_', 1, '_', 'right') # 查找空格，进入状态 1
+        ])
+        tape = Tape([], 'a', ['a', 'a', 'b', 'b', 'b', 'c', 'c', 'c'], '_')
+        dtm = DTM(TMConfiguration(1, tape), [6], rulebook)
+        
+        for i in range(10):
+            dtm.step
+        self.assertEqual(str(dtm.current_configuration), '#<struct TMConfiguration state=5, tape=#<Tape XaaXbbXc(c)_>>')
+
+        for i in range(25):
+            dtm.step
+        self.assertEqual(str(dtm.current_configuration), '#<struct TMConfiguration state=5, tape=#<Tape _XXa(X)XbXXc_>>')
+
+        dtm.run
+        self.assertEqual(str(dtm.current_configuration), '#<struct TMConfiguration state=6, tape=#<Tape _XXXXXXXX(X)_>>')
+
 
 if __name__ == '__main__':
     unittest.main()
