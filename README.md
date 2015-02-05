@@ -1,7 +1,7 @@
 算法与数据结构练习（Python3）
 =====
 
-作者:Chai Fei  
+作者:Chai Fei (十八哥)    
 E-mail:cforth [at] 163.com  
 主要是Python写的算法与数据结构练习代码，还有《计算的本质：深入剖析程序和计算机》这本书中的演示代码。书中是Ruby语言实现的，我改写成了Python语言实现。
 
@@ -63,4 +63,10 @@ Automaton
 Turing
 -------------
 [《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第五章的图灵机实现。   
-1. [确定型图灵机（Deterministic Turing Machine，DTM）](https://github.com/cforth/toys/blob/master/Turing/DTM.py)  
+1. [确定型图灵机（Deterministic Turing Machine，DTM）](https://github.com/cforth/toys/blob/master/Turing/DTM.py)    
+
+
+LambdaCalculus
+---------------
+[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第六章的Lambda演算实现。   
+1. [模拟lambda演算](https://github.com/cforth/toys/blob/master/LambdaCalculus/lambda6.1.py)    
