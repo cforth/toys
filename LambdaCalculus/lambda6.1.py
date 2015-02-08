@@ -60,6 +60,22 @@ SUBTRACT = lambda m: lambda n: n(DECREMENT)(m)
 MULTIPLY = lambda m: lambda n: n(ADD(m))(ZERO)
 POWER = lambda m: lambda n: n(MULTIPLY(m))(ONE)
 
+IS_LESS_OR_EQUAL = lambda m: lambda n: IS_ZERO(SUBTRACT(m)(n))
+
+Y = lambda f: lambda x: f(x(x))(lambda x: f(x(x)))
+Z = lambda f: (lambda x: f(lambda y: x(x)(y)))(lambda x: f(lambda y: x(x)(y)))
+
+MOD = \
+    Z(lambda f: lambda m: lambda n: \
+        IF(IS_LESS_OR_EQUAL(n)(m))( \
+            lambda x: \
+                f(SUBTRACT(m)(n))(n)(x) \
+        )( \
+                m \
+        )
+      )
+              
+
 
 ## UnitTest
 import unittest
@@ -105,6 +121,10 @@ class TestLambda(unittest.TestCase):
         self.assertEqual(to_integer(SUBTRACT(FIVE)(THREE)), 2)
         self.assertEqual(to_integer(MULTIPLY(FIVE)(THREE)), 15)
         self.assertEqual(to_integer(POWER(THREE)(THREE)), 27)
+        self.assertEqual(to_boolean(IS_LESS_OR_EQUAL(ONE)(TWO)), True)
+        self.assertEqual(to_boolean(IS_LESS_OR_EQUAL(TWO)(TWO)), True)
+        self.assertEqual(to_boolean(IS_LESS_OR_EQUAL(THREE)(TWO)), False)
+        self.assertEqual(to_integer(MOD(THREE)(TWO)), 1)
 
 
 
