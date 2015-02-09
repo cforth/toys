@@ -74,7 +74,14 @@ MOD = \
                 m \
         )
       )
-              
+ 
+ 
+ # 6.1.8 列表
+EMPTY = PAIR(TRUE)(TRUE)
+UNSHIFT = lambda l: lambda x: PAIR(FALSE)(PAIR(x)(l))
+IS_EMPTY = LEFT
+FIRST = lambda l: LEFT(RIGHT(l))
+REST = lambda l: RIGHT(RIGHT(l))
 
 
 ## UnitTest
@@ -125,7 +132,14 @@ class TestLambda(unittest.TestCase):
         self.assertEqual(to_boolean(IS_LESS_OR_EQUAL(TWO)(TWO)), True)
         self.assertEqual(to_boolean(IS_LESS_OR_EQUAL(THREE)(TWO)), False)
         self.assertEqual(to_integer(MOD(THREE)(TWO)), 1)
-
+    
+    def test_list(self):
+        my_list = UNSHIFT(UNSHIFT(UNSHIFT(EMPTY)(THREE))(TWO))(ONE)
+        self.assertEqual(to_integer(FIRST(my_list)), 1)
+        self.assertEqual(to_integer(FIRST(REST(my_list))), 2)
+        self.assertEqual(to_integer(FIRST(REST(REST(my_list)))), 3)
+        self.assertEqual(to_boolean(IS_EMPTY(my_list)), False)
+        self.assertEqual(to_boolean(IS_EMPTY(EMPTY)), True)
 
 
 if __name__ == '__main__':
