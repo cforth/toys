@@ -92,6 +92,7 @@ def to_array(proc):
             break
     return array
 
+# range
 RANGE = \
     Z(lambda f: \
         lambda m: lambda n: \
@@ -104,6 +105,7 @@ RANGE = \
             )
     )
 
+# 实现map
 FOLD = \
     Z(lambda f: \
         lambda l: lambda x: lambda g: \
@@ -121,6 +123,25 @@ MAP = \
         FOLD(k)(EMPTY)( \
             lambda l: lambda x: UNSHIFT(l)(f(x))
         )
+
+
+# 6.1.9 字符串
+TEN = MULTIPLY(TWO)(FIVE)
+B = TEN
+F = INCREMENT(B)
+I = INCREMENT(F)
+U = INCREMENT(I)
+ZED = INCREMENT(U)
+
+FIZZ = UNSHIFT(UNSHIFT(UNSHIFT(UNSHIFT(EMPTY)(ZED))(ZED))(I))(F)
+BUZZ = UNSHIFT(UNSHIFT(UNSHIFT(UNSHIFT(EMPTY)(ZED))(ZED))(U))(B)
+FIZZBUZZ = UNSHIFT(UNSHIFT(UNSHIFT(UNSHIFT(BUZZ)(ZED))(ZED))(I))(F)
+
+def to_char(c):
+    return '0123456789BFiuz'[to_integer(c)]
+
+def to_string(s):
+    return ''.join([to_char(c) for c in to_array(s)])
 
 
 ## UnitTest
@@ -193,6 +214,10 @@ class TestLambda(unittest.TestCase):
         self.assertEqual(to_integer(FOLD(RANGE(ONE)(FIVE))(ONE)(MULTIPLY)), 120)
         my_list = MAP(RANGE(ONE)(FIVE))(INCREMENT)
         self.assertEqual([to_integer(p) for p in to_array(my_list)], [2, 3, 4, 5, 6])
+        
+    def test_string(self):
+        self.assertEqual(to_char(ZED), 'z')
+        self.assertEqual(to_string(FIZZBUZZ), 'FizzBuzz')
 
 
 if __name__ == '__main__':
