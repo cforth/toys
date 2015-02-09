@@ -104,6 +104,24 @@ RANGE = \
             )
     )
 
+FOLD = \
+    Z(lambda f: \
+        lambda l: lambda x: lambda g: \
+            IF(IS_EMPTY(l))( \
+                x \
+            )( \
+               lambda y: \
+                    g(f(REST(l))(x)(g))(FIRST(l))(y) \
+            )
+    
+    )
+
+MAP = \
+    lambda k: lambda f: \
+        FOLD(k)(EMPTY)( \
+            lambda l: lambda x: UNSHIFT(l)(f(x))
+        )
+
 
 ## UnitTest
 import unittest
@@ -169,6 +187,12 @@ class TestLambda(unittest.TestCase):
     def test_range(self):
         my_range = RANGE(ONE)(FIVE)
         self.assertEqual([to_integer(p) for p in to_array(my_range)], [1, 2, 3, 4, 5])
+    
+    def test_map(self):
+        self.assertEqual(to_integer(FOLD(RANGE(ONE)(FIVE))(ZERO)(ADD)), 15)
+        self.assertEqual(to_integer(FOLD(RANGE(ONE)(FIVE))(ONE)(MULTIPLY)), 120)
+        my_list = MAP(RANGE(ONE)(FIVE))(INCREMENT)
+        self.assertEqual([to_integer(p) for p in to_array(my_list)], [2, 3, 4, 5, 6])
 
 
 if __name__ == '__main__':
