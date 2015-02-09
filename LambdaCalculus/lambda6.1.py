@@ -83,6 +83,27 @@ IS_EMPTY = LEFT
 FIRST = lambda l: LEFT(RIGHT(l))
 REST = lambda l: RIGHT(RIGHT(l))
 
+def to_array(proc):
+    array = []
+    while True:
+        array.append(FIRST(proc))
+        proc = REST(proc)
+        if to_boolean(IS_EMPTY(proc)):
+            break
+    return array
+
+RANGE = \
+    Z(lambda f: \
+        lambda m: lambda n: \
+            IF(IS_LESS_OR_EQUAL(m)(n))( \
+                lambda x: \
+                    UNSHIFT(f(INCREMENT(m))(n))(m)(x) \
+            )( \
+                EMPTY \
+            
+            )
+    )
+
 
 ## UnitTest
 import unittest
@@ -140,6 +161,14 @@ class TestLambda(unittest.TestCase):
         self.assertEqual(to_integer(FIRST(REST(REST(my_list)))), 3)
         self.assertEqual(to_boolean(IS_EMPTY(my_list)), False)
         self.assertEqual(to_boolean(IS_EMPTY(EMPTY)), True)
+    
+    def test_array(self):
+        my_list = UNSHIFT(UNSHIFT(UNSHIFT(EMPTY)(THREE))(TWO))(ONE)
+        self.assertEqual([to_integer(p) for p in to_array(my_list)], [1, 2, 3])
+
+    def test_range(self):
+        my_range = RANGE(ONE)(FIVE)
+        self.assertEqual([to_integer(p) for p in to_array(my_range)], [1, 2, 3, 4, 5])
 
 
 if __name__ == '__main__':
