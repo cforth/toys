@@ -143,6 +143,47 @@ def to_char(c):
 def to_string(s):
     return ''.join([to_char(c) for c in to_array(s)])
 
+DIV = \
+    Z(lambda f: lambda m: lambda n: \
+        IF(IS_LESS_OR_EQUAL(n)(m))( \
+            lambda x: \
+                INCREMENT(f(SUBTRACT(m)(n))(n))(x) \
+        )( \
+            ZERO \
+        ) \
+    )
+
+PUSH = \
+    lambda l: \
+        lambda x: \
+        FOLD(l)(UNSHIFT(EMPTY)(x))(UNSHIFT)
+        
+TO_DIGITS = \
+    Z(lambda f: lambda n: PUSH( \
+        IF(IS_LESS_OR_EQUAL(n)(DECREMENT(TEN)))( \
+            EMPTY \
+        )( \
+            lambda x: \
+                f(DIV(n)(TEN))(x) \
+        ) \
+    )(MOD(n)(TEN)))
+
+
+#######################################################
+# 用lambda演算实现FizzBuzz游戏
+solution = \
+    MAP(RANGE(ONE)(FIFTY))(lambda n: \
+        IF(IS_ZERO(MOD(n)(FIFTEEN)))( \
+            FIZZBUZZ \
+        )(IF(IS_ZERO(MOD(n)(THREE)))( \
+            FIZZ \
+        )(IF(IS_ZERO(MOD(n)(FIVE)))( \
+            BUZZ \
+        )( \
+           TO_DIGITS(n) \
+        ))) \
+    )
+
 
 ## UnitTest
 import unittest
@@ -218,6 +259,14 @@ class TestLambda(unittest.TestCase):
     def test_string(self):
         self.assertEqual(to_char(ZED), 'z')
         self.assertEqual(to_string(FIZZBUZZ), 'FizzBuzz')
+        self.assertEqual([to_integer(p) for p in to_array(TO_DIGITS(FIVE))], [5])
+        self.assertEqual([to_integer(p) for p in to_array(TO_DIGITS(POWER(FIVE)(THREE)))], [1, 2, 5])
+        self.assertEqual(to_string(TO_DIGITS(FIVE)), '5')
+        self.assertEqual(to_string(TO_DIGITS(POWER(FIVE)(THREE))), '125')
+        
+    def test_FizzBuzz(self):
+        for p in to_array(solution):
+            print(to_string(p))
 
 
 if __name__ == '__main__':
