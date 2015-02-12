@@ -15,9 +15,9 @@ TWO = lambda p: lambda x: p(p(x))
 THREE = lambda p: lambda x: p(p(p(x)))
 FIVE = lambda p: lambda x: p(p(p(p(p(x)))))
 FIFTEEN = lambda p: lambda x: p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(x)))))))))))))))
-# 一百层嵌套括号会导致Python解释器解析溢出错误，改用五十层
-FIFTY = lambda p: lambda x: p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(x))))))))))))))))))))))))))))))))))))))))))))))))))
-                                              
+# 一百层嵌套括号会导致Python解释器解析溢出错误，改用九十层。cpython能解析的括号嵌套的最大层数为92层。
+NINETY = lambda p: lambda x: p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(x))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
 def to_integer(proc):
     return proc(lambda n: n + 1)(0)
 
@@ -172,7 +172,7 @@ TO_DIGITS = \
 #######################################################
 # 用lambda演算实现FizzBuzz游戏
 solution = \
-    MAP(RANGE(ONE)(FIFTY))(lambda n: \
+    MAP(RANGE(ONE)(NINETY))(lambda n: \
         IF(IS_ZERO(MOD(n)(FIFTEEN)))( \
             FIZZBUZZ \
         )(IF(IS_ZERO(MOD(n)(THREE)))( \
@@ -203,7 +203,7 @@ class TestLambda(unittest.TestCase):
     def test_number(self):
         self.assertEqual(to_integer(ZERO), 0)
         self.assertEqual(to_integer(THREE), 3)
-        self.assertEqual(to_integer(FIFTY), 50)
+        self.assertEqual(to_integer(NINETY), 90)
 
     def test_boolean(self):
         self.assertEqual(to_boolean(TRUE), True)
