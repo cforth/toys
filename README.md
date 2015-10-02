@@ -68,6 +68,7 @@ Turing
 
 LambdaCalculus
 ---------------
-[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第六章的Lambda演算实现。   
+[《计算的本质：深入剖析程序和计算机》](http://www.ituring.com.cn/book/1098)中第六章、第七章的Lambda演算实现。   
 1. [模拟lambda演算](https://github.com/cforth/toys/blob/master/LambdaCalculus/lambda6.1.py)    
 2. [FizzBuzz游戏(0-50)](https://github.com/cforth/toys/blob/master/LambdaCalculus/FizzBuzz.py)  
+3. [lambda演算](https://github.com/cforth/toys/blob/master/LambdaCalculus/LambdaCalculus7.1.py)  
