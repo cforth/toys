@@ -86,10 +86,11 @@ REST = lambda l: RIGHT(RIGHT(l))
 def to_array(proc):
     array = []
     while True:
-        array.append(FIRST(proc))
-        proc = REST(proc)
         if to_boolean(IS_EMPTY(proc)):
             break
+        array.append(FIRST(proc))
+        proc = REST(proc)
+
     return array
 
 # range

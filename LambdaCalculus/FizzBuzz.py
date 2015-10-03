@@ -9,10 +9,11 @@ def to_boolean(proc):
 def to_array(proc):
     array = []
     while True:
-        array.append((lambda l: (lambda p: p(lambda x: lambda y: x))((lambda p: p(lambda x: lambda y: y))(l)))(proc))
-        proc = (lambda l: (lambda p: p(lambda x: lambda y: y))((lambda p: p(lambda x: lambda y: y))(l)))(proc)
         if to_boolean((lambda p: p(lambda x: lambda y: x))(proc)):
             break
+        array.append((lambda l: (lambda p: p(lambda x: lambda y: x))((lambda p: p(lambda x: lambda y: y))(l)))(proc))
+        proc = (lambda l: (lambda p: p(lambda x: lambda y: y))((lambda p: p(lambda x: lambda y: y))(l)))(proc)
+
     return array
 
 

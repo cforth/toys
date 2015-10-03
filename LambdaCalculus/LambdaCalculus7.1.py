@@ -12,9 +12,6 @@ ONE = lambda p: lambda x: p(x)
 TWO = lambda p: lambda x: p(p(x))
 THREE = lambda p: lambda x: p(p(p(x)))
 FIVE = lambda p: lambda x: p(p(p(p(p(x)))))
-FIFTEEN = lambda p: lambda x: p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(x)))))))))))))))
-# 一百层嵌套括号会导致Python解释器解析溢出错误，改用九十层。cpython能解析的括号嵌套的最大层数为92层。
-NINETY = lambda p: lambda x: p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(p(x))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
 
 def to_integer(proc):
     return proc(lambda n: n + 1)(0)
@@ -84,10 +81,11 @@ REST = lambda l: RIGHT(RIGHT(l))
 def to_array(proc):
     array = []
     while True:
-        array.append(FIRST(proc))
-        proc = REST(proc)
         if to_boolean(IS_EMPTY(proc)):
             break
+        array.append(FIRST(proc))
+        proc = REST(proc)
+
     return array
 
 # range
