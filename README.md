@@ -24,6 +24,7 @@ sort
 4. [合并排序算法](https://github.com/cforth/toys/blob/master/sort/heap_sort.py)  
 5. [堆排序算法](https://github.com/cforth/toys/blob/master/sort/heap_sort.py)  
 6. [快速排序算法](https://github.com/cforth/toys/blob/master/sort/quick_sort.py)
+7. [计数排序算法](https://github.com/cforth/toys/blob/master/sort/counting_sort.py)
 
 
 search
