@@ -32,6 +32,8 @@ graphs
 1. [无向图的邻接列表表示](https://github.com/cforth/toys/blob/master/graphs/undirected_graphs.py)    
 2. [深度优先算法](https://github.com/cforth/toys/blob/master/graphs/depth_first_search.py)   
 
+2. [深度优先路径查询](https://github.com/cforth/toys/blob/master/graphs/depth_first_paths.py)  
+
 search
 -------------
 常用的搜索算法的演示代码。  
