@@ -18,8 +18,12 @@ def counting_sort(A, B, k):
 
 
 ## test
-arr = [0, 1, 3, 1, 4, 2, 4, 2, 3, 2, 4, 7, 6, 6, 7, 5, 0, 5, 7, 7]
-arr_out = [0 for i in range(0, len(arr))]
-counting_sort(arr, arr_out, 7)
-print(arr)
-print(arr_out)
+def main():
+    arr = [0, 1, 3, 1, 4, 2, 4, 2, 3, 2, 4, 7, 6, 6, 7, 5, 0, 5, 7, 7]
+    arr_out = [0 for i in range(0, len(arr))]
+    counting_sort(arr, arr_out, 7)
+    print(arr)
+    print(arr_out)
+
+if __name__ == '__main__':
+    main()
